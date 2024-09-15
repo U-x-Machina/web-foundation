@@ -9,6 +9,11 @@ variable "gcp_org_id" {
   description = "Google Cloud Organization ID for the project to be created within"
 }
 
+variable "gcp_folder_id" {
+  type = string
+  description = "Google Cloud folder ID for the project to be created within"
+}
+
 variable "gcp_billing_account" {
   type = string
   description = "Google Cloud Billing Account ID to be associated with the created project"

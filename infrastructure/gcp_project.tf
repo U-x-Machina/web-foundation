@@ -11,10 +11,11 @@ resource "random_id" "id" {
 }
 
 resource "google_project" "project" {
-  name            = "${terraform.project}: ${terraform.workspace}"
+  name            = "${terraform.workspace}"
   project_id      = random_id.id.hex
-  billing_account = var.gcp_billing_account
   org_id          = var.gcp_org_id
+  folder_id       = var.gcp_folder_id
+  billing_account = var.gcp_billing_account
 }
 
 resource "google_project_service" "services" {
@@ -31,7 +32,6 @@ output "gcp_region" {
 output "gcp_project_name" {
   value = google_project.project.name
 }
-
 
 output "gcp_project_id" {
   value = google_project.project.project_id
