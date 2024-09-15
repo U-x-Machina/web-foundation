@@ -13,7 +13,6 @@ resource "random_id" "id" {
 resource "google_project" "project" {
   name            = "${terraform.workspace}"
   project_id      = random_id.id.hex
-  org_id          = var.gcp_org_id
   folder_id       = var.gcp_folder_id
   billing_account = var.gcp_billing_account
 }

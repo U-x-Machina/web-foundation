@@ -9,11 +9,6 @@ variable "gcp_state_bucket_id" {
   description = "Google Cloud Storage bucket ID for Terraform state storage"
 }
 
-variable "gcp_org_id" {
-  type = string
-  description = "Google Cloud Organization ID for the project to be created within"
-}
-
 variable "gcp_folder_id" {
   type = string
   description = "Google Cloud folder ID for the project to be created within"
