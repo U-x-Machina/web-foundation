@@ -1,3 +1,7 @@
+provider "google" {
+  region = var.gcp_region
+}
+
 resource "random_id" "id" {
   byte_length = 2
   prefix      = "uxm-${replace(lower(terraform.workspace), "/\\s+/", "-")}-"

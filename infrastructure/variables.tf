@@ -4,6 +4,11 @@ variable "terraform_state_id" {
   default = "1"
 }
 
+variable "gcp_state_bucket_id" {
+  type = string
+  description = "Google Cloud Storage bucket ID for Terraform state storage"
+}
+
 variable "gcp_org_id" {
   type = string
   description = "Google Cloud Organization ID for the project to be created within"
