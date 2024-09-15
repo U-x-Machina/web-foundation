@@ -32,3 +32,8 @@ variable "google_project_services" {
     "run.googleapis.com"
   ]
 }
+
+variable "terraform_service_account" {
+  type = string
+  description = "Google Cloud Platform Service Account that will be used for impersonation"
+}
