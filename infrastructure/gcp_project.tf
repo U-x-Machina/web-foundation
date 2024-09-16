@@ -49,8 +49,9 @@ resource "google_cloud_run_service" "services" {
     }
     metadata {
       annotations = {
-        "autoscaling.knative.dev/minScale" = each.value.min_instances
-        "autoscaling.knative.dev/maxScale" = each.value.max_instances
+        "autoscaling.knative.dev/minScale"      = each.value.min_instances
+        "autoscaling.knative.dev/maxScale"      = each.value.max_instances
+        "run.googleapis.com/startup-cpu-boost"  = each.value.cpu_boost
       }
     }
   }
