@@ -34,6 +34,7 @@ resource "google_cloud_run_v2_service" "services" {
   name                = each.value.name
   location            = var.gcp_region
   deletion_protection = false
+  ingress             = "INGRESS_TRAFFIC_ALL"
 
   template {
     containers {
