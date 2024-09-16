@@ -30,6 +30,7 @@ resource "google_project_service" "services" {
 # Create Google Cloud Run instances according to the config in vars
 resource "google_cloud_run_service" "services" {
   for_each  = var.environments
+  project   = google_project.project.project_id
   name      = each.value.name
   location  = var.gcp_region
 
