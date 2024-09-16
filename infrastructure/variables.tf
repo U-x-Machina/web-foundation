@@ -56,7 +56,7 @@ variable "environments" {
     }
     "staging" = {
       "name" = "staging",
-      "cpu"           = 2,
+      "cpu"           = 1,
       "memory"        = "1Gi",
       "cpu_boost"     = true,
       "concurrency"   = 80,
@@ -65,7 +65,7 @@ variable "environments" {
     }
     "production" = {
       "name" = "production",
-      "cpu"           = 2,
+      "cpu"           = 1,
       "memory"        = "1Gi",
       "cpu_boost"     = true,
       "concurrency"   = 80,
