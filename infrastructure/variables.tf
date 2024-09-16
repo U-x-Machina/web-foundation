@@ -74,7 +74,7 @@ variable "environments" {
       "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
-      "max_instances" = 50
+      "max_instances" = 10
     }
   }
 }
