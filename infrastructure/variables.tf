@@ -35,30 +35,30 @@ variable "google_project_services" {
 
 variable "environments" {
   description = "Environments configuration"
-  default = [
-    {
+  default = {
+    "development" = {
       "name" = "development",
       "traffic_split" = 0,
       "min_total_fe_instances" = 0,
       "max_total_fe_instances" = 1
-    },
-    {
+    }
+    "test" = {
       "name" = "test",
       "traffic_split" = 0,
       "min_total_fe_instances" = 0,
       "max_total_fe_instances" = 2
-    },
-    {
+    }
+    "staging" = {
       "name" = "staging",
       "traffic_split" = 0,
       "min_total_fe_instances" = 0,
       "max_total_fe_instances" = 2
-    },
-    {
+    }
+    "production" = {
       "name" = "production",
       "traffic_split" = 1,
       "min_total_fe_instances" = 0,
       "max_total_fe_instances" = 50
     }
-  ]
+  }
 }
