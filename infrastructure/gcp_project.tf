@@ -38,9 +38,24 @@ resource "google_cloud_run_service" "services" {
     spec {
       containers {
         image = "us-docker.pkg.dev/cloudrun/container/hello"
+        resources {
+          limits = {
+            cpu    = each.value.cpu
+            memory = each.value.memory
+          }
+        }
+      }
+      container_concurrency = each.value.concurrency
+    }
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/minScale" = each.value.min_instances
+        "autoscaling.knative.dev/maxScale" = each.value.max_instances
       }
     }
   }
+
+  depends_on  = [google_project_service.services]
 }
 
 # Outputs

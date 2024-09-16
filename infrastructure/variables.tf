@@ -37,28 +37,40 @@ variable "environments" {
   description = "Environments configuration"
   default = {
     "development" = {
-      "name" = "development",
-      "traffic_split" = 0,
-      "min_total_fe_instances" = 0,
-      "max_total_fe_instances" = 1
+      "name"          = "development",
+      "cpu"           = 1,
+      "memory"        = "512Mi",
+      "cpu_boost"     = true,
+      "concurrency"   = 80,
+      "min_instances" = 0,
+      "max_instances" = 1
     }
     "test" = {
       "name" = "test",
-      "traffic_split" = 0,
-      "min_total_fe_instances" = 0,
-      "max_total_fe_instances" = 2
+      "cpu"           = 1,
+      "memory"        = "512Mi",
+      "cpu_boost"     = true,
+      "concurrency"   = 80,
+      "min_instances" = 0,
+      "max_instances" = 2
     }
     "staging" = {
       "name" = "staging",
-      "traffic_split" = 0,
-      "min_total_fe_instances" = 0,
-      "max_total_fe_instances" = 2
+      "cpu"           = 2,
+      "memory"        = "1Gi",
+      "cpu_boost"     = true,
+      "concurrency"   = 80,
+      "min_instances" = 0,
+      "max_instances" = 3
     }
     "production" = {
       "name" = "production",
-      "traffic_split" = 1,
-      "min_total_fe_instances" = 0,
-      "max_total_fe_instances" = 50
+      "cpu"           = 2,
+      "memory"        = "1Gi",
+      "cpu_boost"     = true,
+      "concurrency"   = 80,
+      "min_instances" = 0,
+      "max_instances" = 50
     }
   }
 }
