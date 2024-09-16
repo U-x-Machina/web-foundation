@@ -32,3 +32,33 @@ variable "google_project_services" {
     "run.googleapis.com"
   ]
 }
+
+variable "environments" {
+  description = "Environments configuration"
+  default = [
+    {
+      "name" = "development",
+      "traffic_split" = 0,
+      "min_total_fe_instances" = 0,
+      "max_total_fe_instances" = 1
+    },
+    {
+      "name" = "test",
+      "traffic_split" = 0,
+      "min_total_fe_instances" = 0,
+      "max_total_fe_instances" = 2
+    },
+    {
+      "name" = "staging",
+      "traffic_split" = 0,
+      "min_total_fe_instances" = 0,
+      "max_total_fe_instances" = 2
+    },
+    {
+      "name" = "production",
+      "traffic_split" = 1,
+      "min_total_fe_instances" = 0,
+      "max_total_fe_instances" = 50
+    }
+  ]
+}
