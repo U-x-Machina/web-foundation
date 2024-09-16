@@ -29,10 +29,11 @@ resource "google_project_service" "services" {
 
 # Create Google Cloud Run instances according to the config in vars
 resource "google_cloud_run_v2_service" "services" {
-  for_each  = var.environments
-  project   = google_project.project.project_id
-  name      = each.value.name
-  location  = var.gcp_region
+  for_each            = var.environments
+  project             = google_project.project.project_id
+  name                = each.value.name
+  location            = var.gcp_region
+  deletion_protection = false
 
   template {
     containers {
@@ -53,7 +54,7 @@ resource "google_cloud_run_v2_service" "services" {
     max_instance_request_concurrency = each.value.concurrency
   }
 
-  depends_on  = [google_project_service.services]
+  depends_on = [google_project_service.services]
 }
 
 # Outputs
