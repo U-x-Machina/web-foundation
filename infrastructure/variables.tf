@@ -41,6 +41,7 @@ variable "environments" {
       "cpu"           = 1,
       "memory"        = "512Mi",
       "cpu_boost"     = false,
+      "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 1
@@ -50,6 +51,7 @@ variable "environments" {
       "cpu"           = 1,
       "memory"        = "512Mi",
       "cpu_boost"     = false,
+      "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 2
@@ -59,6 +61,7 @@ variable "environments" {
       "cpu"           = 1,
       "memory"        = "1Gi",
       "cpu_boost"     = true,
+      "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 3
@@ -68,6 +71,7 @@ variable "environments" {
       "cpu"           = 1,
       "memory"        = "1Gi",
       "cpu_boost"     = true,
+      "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 50

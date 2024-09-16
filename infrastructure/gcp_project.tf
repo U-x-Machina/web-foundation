@@ -28,32 +28,29 @@ resource "google_project_service" "services" {
 }
 
 # Create Google Cloud Run instances according to the config in vars
-resource "google_cloud_run_service" "services" {
+resource "google_cloud_run_v2_service" "services" {
   for_each  = var.environments
   project   = google_project.project.project_id
   name      = each.value.name
   location  = var.gcp_region
 
   template {
-    spec {
-      containers {
-        image = "us-docker.pkg.dev/cloudrun/container/hello"
-        resources {
-          limits = {
-            cpu    = each.value.cpu
-            memory = each.value.memory
-          }
+    containers {
+      image = "us-docker.pkg.dev/cloudrun/container/hello"
+      resources {
+        limits = {
+          cpu    = each.value.cpu
+          memory = each.value.memory
         }
-      }
-      container_concurrency = each.value.concurrency
-    }
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/minScale"      = each.value.min_instances
-        "autoscaling.knative.dev/maxScale"      = each.value.max_instances
-        "run.googleapis.com/startup-cpu-boost"  = each.value.cpu_boost
+        cpu_idle          = each.value.cpu_idle
+        startup_cpu_boost = each.value.cpu_boost
       }
     }
+    scaling {
+      min_instance_count = each.value.min_instances
+      max_instance_count = each.value.max_instances
+    }
+    max_instance_request_concurrency = each.value.concurrency
   }
 
   depends_on  = [google_project_service.services]
