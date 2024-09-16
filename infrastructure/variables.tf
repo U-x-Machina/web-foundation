@@ -40,7 +40,7 @@ variable "environments" {
       "name"          = "development",
       "cpu"           = 1,
       "memory"        = "512Mi",
-      "cpu_boost"     = true,
+      "cpu_boost"     = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 1
@@ -49,7 +49,7 @@ variable "environments" {
       "name" = "test",
       "cpu"           = 1,
       "memory"        = "512Mi",
-      "cpu_boost"     = true,
+      "cpu_boost"     = false,
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 2
