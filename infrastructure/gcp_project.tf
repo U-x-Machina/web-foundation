@@ -58,6 +58,22 @@ resource "google_cloud_run_v2_service" "services" {
   depends_on = [google_project_service.services]
 }
 
+# Set up public access to the Google Cloud Run services
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = ["allUsers"]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  for_each    = google_cloud_run_v2_service.services
+  location    = each.value.location
+  project     = each.value.project
+  service     = each.value.name
+  policy_data = data.google_iam_policy.noauth.policy_data
+}
+
 # Outputs
 output "gcp_region" {
   value = var.gcp_region
