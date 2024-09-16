@@ -2,6 +2,7 @@ provider "google" {
   region = var.gcp_region
 }
 
+# Create a randomised project name
 resource "random_id" "id" {
   byte_length = 2
   prefix      = "uxm-${replace(lower(terraform.workspace), "/\\s+/", "-")}-"
@@ -10,6 +11,7 @@ resource "random_id" "id" {
   }
 }
 
+# Create GCP project
 resource "google_project" "project" {
   name            = "${terraform.workspace}"
   project_id      = random_id.id.hex
@@ -17,6 +19,7 @@ resource "google_project" "project" {
   billing_account = var.gcp_billing_account
 }
 
+# Enable required services in the project, defined in the variables
 resource "google_project_service" "services" {
   count   = length(var.google_project_services)
   project = google_project.project.project_id
@@ -24,6 +27,22 @@ resource "google_project_service" "services" {
   disable_on_destroy = true
 }
 
+# Create Google Cloud Run instances according to the config in vars
+resource "google_cloud_run_service" "services" {
+  for_each  = var.environments
+  name      = each.value.name
+  location  = var.gcp_region
+
+  template {
+    spec {
+      containers {
+        image = "us-docker.pkg.dev/cloudrun/container/hello"
+      }
+    }
+  }
+}
+
+# Outputs
 output "gcp_region" {
   value = var.gcp_region
 }
