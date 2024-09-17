@@ -88,7 +88,8 @@ resource "google_cloud_run_v2_service" "services" {
 
 # Load balancing
 resource "google_compute_global_address" "default" {
-  name = "global-ip"
+  name    = "global-ip"
+  project = google_project.project.project_id
 }
 
 # Outputs
