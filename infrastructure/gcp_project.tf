@@ -27,12 +27,24 @@ resource "google_project_service" "services" {
   disable_on_destroy = true
 }
 
+# Flatten the services list to create
+locals {
+  gcr_services = distinct(flatten([
+    for env in var.environments : [
+      for region in env.regions : {
+        service = env
+        region  = region
+      }
+    ]
+  ]))
+}
+
 # Create Google Cloud Run instances according to the config in vars
 resource "google_cloud_run_v2_service" "services" {
-  for_each            = var.environments
+  for_each            = { for entry in local.gcr_services: "${entry.service}.${entry.region}" => entry }
   project             = google_project.project.project_id
-  name                = each.value.name
-  location            = var.gcp_region
+  name                = each.value.service.name
+  location            = each.value.region
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
 
@@ -41,44 +53,45 @@ resource "google_cloud_run_v2_service" "services" {
       image = "us-docker.pkg.dev/cloudrun/container/hello"
       resources {
         limits = {
-          cpu    = each.value.cpu
-          memory = each.value.memory
+          cpu    = each.value.service.cpu
+          memory = each.value.service.memory
         }
-        cpu_idle          = each.value.cpu_idle
-        startup_cpu_boost = each.value.cpu_boost
+        cpu_idle          = each.value.service.cpu_idle
+        startup_cpu_boost = each.value.service.cpu_boost
       }
     }
     scaling {
-      min_instance_count = each.value.min_instances
-      max_instance_count = each.value.max_instances
+      min_instance_count = each.value.service.min_instances
+      max_instance_count = each.value.service.max_instances
     }
-    max_instance_request_concurrency = each.value.concurrency
+    max_instance_request_concurrency = each.value.service.concurrency
   }
 
   depends_on = [google_project_service.services]
 }
 
-# Set up public access to the Google Cloud Run services
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = ["allUsers"]
-  }
-}
+# # Set up public access to the Google Cloud Run services
+# data "google_iam_policy" "noauth" {
+#   binding {
+#     role = "roles/run.invoker"
+#     members = ["allUsers"]
+#   }
+# }
 
-resource "google_cloud_run_service_iam_policy" "noauth" {
-  for_each    = google_cloud_run_v2_service.services
-  location    = each.value.location
-  project     = each.value.project
-  service     = each.value.name
-  policy_data = data.google_iam_policy.noauth.policy_data
+# resource "google_cloud_run_service_iam_policy" "noauth" {
+#   for_each    = google_cloud_run_v2_service.services
+#   location    = each.value.location
+#   project     = each.value.project
+#   service     = each.value.name
+#   policy_data = data.google_iam_policy.noauth.policy_data
+# }
+
+# Load balancing
+resource "google_compute_global_address" "default" {
+  name = "global-ip"
 }
 
 # Outputs
-output "gcp_region" {
-  value = var.gcp_region
-}
-
 output "gcp_project_name" {
   value = google_project.project.name
 }
