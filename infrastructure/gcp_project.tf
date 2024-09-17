@@ -41,7 +41,7 @@ locals {
 
 # Create Google Cloud Run instances according to the config in vars
 resource "google_cloud_run_v2_service" "services" {
-  for_each            = { for entry in local.gcr_services: "${entry.service}.${entry.region}" => entry }
+  for_each            = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   project             = google_project.project.project_id
   name                = each.value.service.name
   location            = each.value.region
