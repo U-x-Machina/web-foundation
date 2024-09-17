@@ -43,7 +43,7 @@ locals {
 resource "google_cloud_run_v2_service" "services" {
   for_each            = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   project             = google_project.project.project_id
-  name                = each.value.service.name
+  name                = "${each.value.service.name}-${each.value.region}"
   location            = each.value.region
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
