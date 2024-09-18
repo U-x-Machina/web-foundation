@@ -102,7 +102,7 @@ locals {
   top_level_domains = distinct(compact([var.domain_dev, var.domain_prod]))
   ssl_domains = distinct(flatten([
     for env in var.environments : [
-      for domain in local.top_level_domains : env.subdomain == "" ? domain : "${env.subdomain}.${domain}"
+      for domain in local.top_level_domains : env.subdomain == "" ? "${terraform.workspace}.${domain}" : "${env.subdomain}.${terraform.workspace}.${domain}"
     ]
   ]))
 }
