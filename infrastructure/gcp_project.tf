@@ -1,9 +1,11 @@
 provider "google" {
-  region = var.gcp_region
+  project = google_project.project.project_id
+  region  = var.gcp_region
 }
 
 provider "google-beta" {
-  region = var.gcp_region
+  project = google_project.project.project_id
+  region  = var.gcp_region
 }
 
 # Create a randomised project name
