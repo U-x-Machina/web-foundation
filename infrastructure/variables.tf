@@ -39,6 +39,7 @@ variable "environments" {
   default = {
     "development" = {
       "name"          = "development",
+      "subdomain"     = "development",
       "regions"       = ["europe-west1"],
       "cpu"           = 1,
       "memory"        = "512Mi",
@@ -50,6 +51,7 @@ variable "environments" {
     }
     "test" = {
       "name"          = "test",
+      "subdomain"     = "test",
       "regions"       = ["europe-west1"],
       "cpu"           = 1,
       "memory"        = "512Mi",
@@ -61,6 +63,7 @@ variable "environments" {
     }
     "staging" = {
       "name"          = "staging",
+      "subdomain"     = "staging",
       "regions"       = ["europe-west1"],
       "cpu"           = 1,
       "memory"        = "1Gi",
@@ -72,6 +75,7 @@ variable "environments" {
     }
     "production" = {
       "name"          = "production",
+      "subdomain"     = "",
       "regions"       = ["us-central1", "europe-west1", "asia-east1"]
       "cpu"           = 1,
       "memory"        = "1Gi",
@@ -82,4 +86,15 @@ variable "environments" {
       "max_instances" = 10
     }
   }
+}
+
+variable "domain_dev" {
+  type        = string
+  description = "Development domain to be used for all environments"
+}
+
+variable "domain_prod" {
+  type        = string
+  description = "Production domain"
+  default     = ""
 }

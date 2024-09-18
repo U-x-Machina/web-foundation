@@ -2,6 +2,10 @@ provider "google" {
   region = var.gcp_region
 }
 
+provider "google-beta" {
+  region = var.gcp_region
+}
+
 # Create a randomised project name
 resource "random_id" "id" {
   byte_length = 2
@@ -92,7 +96,25 @@ resource "google_compute_global_address" "default" {
   project       = google_project.project.project_id
   address_type  = "EXTERNAL"
   depends_on    = [google_project_service.services]
-} 
+}
+
+locals {
+  top_level_domains = distinct(compact([var.domain_dev, var.domain_prod]))
+  ssl_domains = distinct(flatten([
+    for env in var.environments : [
+      for domain in local.top_level_domains : env.subdomain == "" ? domain : "${env.subdomain}.${domain}"
+    ]
+  ]))
+}
+
+resource "google_compute_managed_ssl_certificate" "lb_default" {
+  provider = google-beta
+  name     = "ssl-cert"
+
+  managed {
+    domains = local.ssl_domains
+  }
+}
 
 # Outputs
 output "gcp_project_name" {
