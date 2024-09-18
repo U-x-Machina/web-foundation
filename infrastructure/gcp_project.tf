@@ -116,7 +116,7 @@ resource "google_compute_region_network_endpoint_group" "lb_default" {
   region                = each.value.region
 
   cloud_run {
-    service = each.value.service.name
+    service = "${each.value.service.name}-${each.value.region}"
   }
 }
 
