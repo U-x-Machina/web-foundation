@@ -134,10 +134,7 @@ resource "google_compute_backend_service" "lb_default" {
     }
   }
 
-  # Use an explicit depends_on clause to wait until API is enabled
-  depends_on = [
-    google_project_service.compute_api,
-  ]
+  depends_on = [google_project_service.services]
 }
 
 resource "google_compute_managed_ssl_certificate" "lb_default" {
