@@ -91,6 +91,7 @@ resource "google_compute_global_address" "default" {
   name          = "global-ip"
   project       = google_project.project.project_id
   address_type  = "EXTERNAL"
+  depends_on    = [google_project_service.services]
 } 
 
 # Outputs
