@@ -110,7 +110,7 @@ locals {
 resource "google_compute_region_network_endpoint_group" "lb_default" {
   for_each              = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider              = google-beta
-  name                  = "region-neg-${each.value.region}"
+  name                  = "region-neg-${each.value.service.name}-${each.value.region}"
   project               = google_project.project.project_id
   network_endpoint_type = "SERVERLESS"
   region                = each.value.region
