@@ -107,6 +107,38 @@ locals {
   ]))
 }
 
+resource "google_compute_region_network_endpoint_group" "lb_default" {
+  for_each              = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
+  provider              = google-beta
+  name                  = "region-neg-${each.value.region}"
+  project               = google_project.project.project_id
+  network_endpoint_type = "SERVERLESS"
+  region                = each.value.region
+
+  cloud_run {
+    service = each.value.service.name
+  }
+}
+
+resource "google_compute_backend_service" "lb_default" {
+  provider              = google-beta
+  name                  = "compute-backend"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+
+  backend {
+    group = google_compute_region_network_endpoint_group.lb_default[0].id
+  }
+
+  backend {
+    group = google_compute_region_network_endpoint_group.lb_default[1].id
+  }
+
+  # Use an explicit depends_on clause to wait until API is enabled
+  depends_on = [
+    google_project_service.compute_api,
+  ]
+}
+
 resource "google_compute_managed_ssl_certificate" "lb_default" {
   provider = google-beta
   name     = "ssl-cert"
