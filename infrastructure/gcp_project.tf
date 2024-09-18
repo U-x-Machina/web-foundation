@@ -1,11 +1,9 @@
 provider "google" {
-  project = google_project.project.project_id
-  region  = var.gcp_region
+  region = var.gcp_region
 }
 
 provider "google-beta" {
-  project = google_project.project.project_id
-  region  = var.gcp_region
+  region = var.gcp_region
 }
 
 # Create a randomised project name
@@ -112,6 +110,7 @@ locals {
 resource "google_compute_managed_ssl_certificate" "lb_default" {
   provider = google-beta
   name     = "ssl-cert"
+  project  = google_project.project.project_id
 
   managed {
     domains = local.ssl_domains
@@ -125,4 +124,8 @@ output "gcp_project_name" {
 
 output "gcp_project_id" {
   value = google_project.project.project_id
+}
+
+output "global_ip" {
+  value = google_compute_global_address.default.address
 }
