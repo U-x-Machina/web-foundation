@@ -130,7 +130,7 @@ resource "google_compute_backend_service" "lb_default" {
     for_each = each.value.regions
 
     content {
-      group = google_compute_region_network_endpoint_group.lb_default["${google_compute_backend_service.value.name}.${backend.value}"].id
+      group = google_compute_region_network_endpoint_group.lb_default["${google_compute_backend_service.lb_default.value.name}.${backend.value}"].id
     }
   }
 
