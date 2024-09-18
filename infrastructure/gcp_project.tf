@@ -120,6 +120,26 @@ resource "google_compute_region_network_endpoint_group" "lb_default" {
   }
 }
 
+resource "google_compute_backend_service" "lb_default" {
+  for_each              = var.environments
+  provider              = google-beta
+  name                  = "lb-backend-${each.value.name}"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+
+  dynamic "backend" {
+    for_each = each.value.regions
+
+    content {
+      group = google_compute_region_network_endpoint_group.lb_default["${google_compute_backend_service.value.name}.${backend.value}"].id
+    }
+  }
+
+  # Use an explicit depends_on clause to wait until API is enabled
+  depends_on = [
+    google_project_service.compute_api,
+  ]
+}
+
 resource "google_compute_managed_ssl_certificate" "lb_default" {
   provider = google-beta
   name     = "ssl-cert"
