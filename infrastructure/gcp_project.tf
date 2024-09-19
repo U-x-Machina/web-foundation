@@ -110,7 +110,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   project     = each.value.project
   service     = each.value.name
   policy_data = data.google_iam_policy.noauth.policy_data
-  depends_on  = [google_tags_tag_binding.binding]
+  depends_on  = [google_tags_location_tag_binding.binding]
 }
 
 # Load balancing
