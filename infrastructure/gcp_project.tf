@@ -91,7 +91,7 @@ resource "google_cloud_run_v2_service" "services" {
 # Assign the allUsersIngress tag to Cloud Run Services to enable public access
 resource "google_tags_location_tag_binding" "binding" {
   for_each  = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
-  parent    = google_cloud_run_v2_service.services["${each.value.service.name}.${each.value.region}"].name
+  parent    = "//run.googleapis.com/projects/${data.google_project.project.number}/locations/${each.value.region}/services/${google_cloud_run_v2_service.services["${each.value.service.name}.${each.value.region}"].name}"
   tag_value = var.gcp_all_users_ingress_tag_value_id
   location  = each.value.region
 }
