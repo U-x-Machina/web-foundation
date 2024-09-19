@@ -146,6 +146,7 @@ resource "google_compute_backend_service" "lb_default" {
 resource "google_compute_url_map" "lb_default" {
   provider        = google-beta
   name            = "lb-urlmap"
+  default_service = google_compute_backend_service.lb_default.production.id
 
   dynamic "host_rule" {
     for_each = local.url_maps
