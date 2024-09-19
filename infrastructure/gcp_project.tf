@@ -187,6 +187,7 @@ resource "google_compute_managed_ssl_certificate" "lb_default" {
 
 resource "google_compute_target_https_proxy" "lb_default" {
   provider = google-beta
+  project  = google_project.project.project_id
   name     = "https-proxy"
   url_map  = google_compute_url_map.lb_default.id
   ssl_certificates = [
