@@ -185,6 +185,16 @@ resource "google_compute_managed_ssl_certificate" "lb_default" {
   }
 }
 
+resource "google_compute_target_https_proxy" "lb_default" {
+  provider = google-beta
+  name     = "https-proxy"
+  url_map  = google_compute_url_map.lb_default.id
+  ssl_certificates = [
+    google_compute_managed_ssl_certificate.lb_default.name
+  ]
+  depends_on = [google_project_service.services]
+}
+
 # Outputs
 output "gcp_project_name" {
   value = google_project.project.name
