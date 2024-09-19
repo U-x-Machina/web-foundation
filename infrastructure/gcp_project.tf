@@ -152,8 +152,8 @@ resource "google_compute_url_map" "lb_default" {
     for_each = local.url_maps
 
     content {
-      hosts = each.value.domains
-      path_matcher = each.value.env.name
+      hosts = host_rule.value.domains
+      path_matcher = host_rule.value.env.name
     }
   }
 
@@ -161,8 +161,8 @@ resource "google_compute_url_map" "lb_default" {
     for_each = local.url_maps
 
     content {
-      name            = each.value.env.name
-      default_service = google_compute_backend_service.lb_default[each.value.env.name].id
+      name            = path_matcher.value.env.name
+      default_service = google_compute_backend_service.lb_default[path_matcher.value.env.name].id
       route_rules {
         priority = 1
         url_redirect {
