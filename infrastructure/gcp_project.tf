@@ -108,8 +108,8 @@ resource "google_cloud_run_v2_service" "services" {
 
 # Load balancing
 resource "google_compute_global_address" "default" {
-  name          = "global-ip"
   project       = google_project.project.project_id
+  name          = "global-ip"
   address_type  = "EXTERNAL"
   depends_on    = [google_project_service.services]
 }
@@ -117,8 +117,8 @@ resource "google_compute_global_address" "default" {
 resource "google_compute_region_network_endpoint_group" "lb_default" {
   for_each              = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider              = google-beta
-  name                  = "region-neg-${each.value.service.name}-${each.value.region}"
   project               = google_project.project.project_id
+  name                  = "region-neg-${each.value.service.name}-${each.value.region}"
   network_endpoint_type = "SERVERLESS"
   region                = each.value.region
 
@@ -130,6 +130,7 @@ resource "google_compute_region_network_endpoint_group" "lb_default" {
 resource "google_compute_backend_service" "lb_default" {
   for_each              = var.environments
   provider              = google-beta
+  project               = google_project.project.project_id
   name                  = "lb-backend-${each.value.name}"
   load_balancing_scheme = "EXTERNAL_MANAGED"
 
@@ -146,8 +147,8 @@ resource "google_compute_backend_service" "lb_default" {
 
 resource "google_compute_managed_ssl_certificate" "lb_default" {
   provider = google-beta
-  name     = "ssl-cert"
   project  = google_project.project.project_id
+  name     = "ssl-cert"
 
   managed {
     domains = local.ssl_domains
