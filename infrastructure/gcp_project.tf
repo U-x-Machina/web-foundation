@@ -147,7 +147,7 @@ resource "google_compute_url_map" "lb_default" {
   provider        = google-beta
   project         = google_project.project.project_id
   name            = "lb-urlmap"
-  default_service = google_compute_backend_service.lb_default["production"].id
+  default_service = google_compute_backend_service.lb_default[var.default_environment].id
 
   dynamic "host_rule" {
     for_each = local.url_maps
