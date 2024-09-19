@@ -6,6 +6,34 @@ provider "google-beta" {
   region = var.gcp_region
 }
 
+locals {
+  gcr_services = distinct(flatten([
+    for env in var.environments : [
+      for region in env.regions : {
+        service = env
+        region  = region
+      }
+    ]
+  ]))
+
+  env_services = [
+    for env in var.environments : [
+      for region in env.regions : {
+        env = env
+        region  = region
+      }
+    ]
+  ]
+
+  top_level_domains = distinct(compact([var.domain_dev, var.domain_prod]))
+
+  ssl_domains = distinct(flatten([
+    for env in var.environments : [
+      for domain in local.top_level_domains : env.subdomain == "" ? "${terraform.workspace}.${domain}" : "${env.subdomain}.${terraform.workspace}.${domain}"
+    ]
+  ]))
+}
+
 # Create a randomised project name
 resource "random_id" "id" {
   byte_length = 2
@@ -29,18 +57,6 @@ resource "google_project_service" "services" {
   project = google_project.project.project_id
   service = var.google_project_services[count.index]
   disable_on_destroy = true
-}
-
-# Flatten the services list to create
-locals {
-  gcr_services = distinct(flatten([
-    for env in var.environments : [
-      for region in env.regions : {
-        service = env
-        region  = region
-      }
-    ]
-  ]))
 }
 
 # Create Google Cloud Run instances according to the config in vars
@@ -98,15 +114,6 @@ resource "google_compute_global_address" "default" {
   depends_on    = [google_project_service.services]
 }
 
-locals {
-  top_level_domains = distinct(compact([var.domain_dev, var.domain_prod]))
-  ssl_domains = distinct(flatten([
-    for env in var.environments : [
-      for domain in local.top_level_domains : env.subdomain == "" ? "${terraform.workspace}.${domain}" : "${env.subdomain}.${terraform.workspace}.${domain}"
-    ]
-  ]))
-}
-
 resource "google_compute_region_network_endpoint_group" "lb_default" {
   for_each              = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider              = google-beta
@@ -130,7 +137,7 @@ resource "google_compute_backend_service" "lb_default" {
     for_each = each.value.regions
 
     content {
-      group = google_compute_region_network_endpoint_group.lb_default["${google_compute_backend_service.lb_default.value.name}.${backend.value}"].id
+      group = google_compute_region_network_endpoint_group.lb_default["${each.value.name}.${backend.value}"].id
     }
   }
 
