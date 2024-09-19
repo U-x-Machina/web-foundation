@@ -105,7 +105,7 @@ resource "google_cloud_run_v2_service" "services" {
 # }
 
 # Load balancing
-resource "google_compute_global_address" "default" {
+resource "google_compute_global_address" "lb_default" {
   project       = google_project.project.project_id
   name          = "global-ip"
   address_type  = "EXTERNAL"
@@ -196,6 +196,16 @@ resource "google_compute_target_https_proxy" "lb_default" {
   depends_on = [google_project_service.services]
 }
 
+resource "google_compute_global_forwarding_rule" "lb_default" {
+  provider              = google-beta
+  project               = google_project.project.project_id
+  name                  = "lb-fr"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  target                = google_compute_target_https_proxy.lb_default.id
+  ip_address            = google_compute_global_address.lb_default.id
+  port_range            = "443"
+}
+
 # Outputs
 output "gcp_project_name" {
   value = google_project.project.name
@@ -206,5 +216,5 @@ output "gcp_project_id" {
 }
 
 output "global_ip" {
-  value = google_compute_global_address.default.address
+  value = google_compute_global_address.lb_default.address
 }
