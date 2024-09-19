@@ -16,22 +16,20 @@ locals {
     ]
   ]))
 
-  env_services = [
-    for env in var.environments : [
-      for region in env.regions : {
-        env = env
-        region  = region
-      }
-    ]
-  ]
-
-  top_level_domains = distinct(compact([var.domain_dev, var.domain_prod]))
+  top_level_domains = distinct(compact(["${terraform.workspace}.${var.domain_dev}", var.domain_prod]))
 
   ssl_domains = distinct(flatten([
     for env in var.environments : [
-      for domain in local.top_level_domains : env.subdomain == "" ? "${terraform.workspace}.${domain}" : "${env.subdomain}.${terraform.workspace}.${domain}"
+      for domain in local.top_level_domains : env.subdomain == "" ? domain : "${env.subdomain}.${domain}"
     ]
   ]))
+
+  url_maps = [
+    for env in var.environments: {
+      env     = env
+      domains = [for domain in local.top_level_domains : env.subdomain == "" ? domain : "${env.subdomain}.${domain}"]
+    }
+  ]
 }
 
 # Create a randomised project name
@@ -143,6 +141,36 @@ resource "google_compute_backend_service" "lb_default" {
   }
 
   depends_on = [google_project_service.services]
+}
+
+resource "google_compute_url_map" "lb_default" {
+  provider        = google-beta
+  name            = "lb-urlmap"
+
+  dynamic "host_rule" {
+    for_each = local.url_maps
+
+    content {
+      hosts = each.value.domains
+      path_matcher = each.value.env.name
+    }
+  }
+
+  dynamic "path_matcher" {
+    for_each = local.url_maps
+
+    content {
+      name            = each.value.env.name
+      default_service = google_compute_backend_service.lb_default[each.value.env.name].id
+      route_rules {
+        priority = 1
+        url_redirect {
+          https_redirect         = true
+          redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+        }
+      }
+    }
+  }
 }
 
 resource "google_compute_managed_ssl_certificate" "lb_default" {
