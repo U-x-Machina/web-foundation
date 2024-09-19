@@ -88,21 +88,29 @@ resource "google_cloud_run_v2_service" "services" {
   depends_on = [google_project_service.services]
 }
 
-# # Set up public access to the Google Cloud Run services
-# data "google_iam_policy" "noauth" {
-#   binding {
-#     role = "roles/run.invoker"
-#     members = ["allUsers"]
-#   }
-# }
+# Assign the allUsersIngress tag to Cloud Run Services to enable public access
+resource "google_tags_tag_binding" "binding" {
+  for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
+  parent = google_cloud_run_v2_service.services["${each.value.service.name}.${each.value.region}"].id
+  tag_value = var.gcp_all_users_ingress_tag_value_id
+}
 
-# resource "google_cloud_run_service_iam_policy" "noauth" {
-#   for_each    = google_cloud_run_v2_service.services
-#   location    = each.value.location
-#   project     = each.value.project
-#   service     = each.value.name
-#   policy_data = data.google_iam_policy.noauth.policy_data
-# }
+# Set up public access to the Google Cloud Run services
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = ["allUsers"]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  for_each    = google_cloud_run_v2_service.services
+  location    = each.value.location
+  project     = each.value.project
+  service     = each.value.name
+  policy_data = data.google_iam_policy.noauth.policy_data
+  depends_on  = [google_tags_tag_binding.binding]
+}
 
 # Load balancing
 resource "google_compute_global_address" "lb_default" {

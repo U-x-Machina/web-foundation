@@ -34,6 +34,11 @@ variable "google_project_services" {
   ]
 }
 
+variable "gcp_all_users_ingress_tag_value_id" {
+  type = string
+  description = "Google Cloud Tag value ID enabling allUsers ingress on Cloud Run services"
+}
+
 variable "environments" {
   description = "Environments configuration"
   default = {
