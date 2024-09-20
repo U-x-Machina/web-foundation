@@ -140,7 +140,7 @@ resource "google_compute_backend_service" "lb_default" {
   project               = google_project.project.project_id
   name                  = "lb-backend-${each.value.name}"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  enable_cdn            = env.value.enable_cdn
+  enable_cdn            = each.value.enable_cdn
 
   dynamic "backend" {
     for_each = each.value.regions
