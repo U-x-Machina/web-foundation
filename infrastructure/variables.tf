@@ -113,3 +113,8 @@ variable "domain_prod" {
   description = "Production domain"
   default     = ""
 }
+
+variable "mongodb_atlas_org_id" {
+  type        = string
+  description = "MongoDB Atlas Organization ID"
+}
