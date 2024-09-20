@@ -7,6 +7,7 @@ provider "google-beta" {
 }
 
 locals {
+  # A flat array of all services, including regional "copies"
   gcr_services = distinct(flatten([
     for env in var.environments : [
       for region in env.regions : {
@@ -16,14 +17,17 @@ locals {
     ]
   ]))
 
+  # An array of top-level domains mapped to this project
   top_level_domains = distinct(compact(["${terraform.workspace}.${var.domain_dev}", var.domain_prod]))
 
+  # An exhaustive array of all full domains (incl. env-specific subdomains) associated with this project
   ssl_domains = distinct(flatten([
     for env in var.environments : [
       for domain in local.top_level_domains : env.subdomain == "" ? domain : "${env.subdomain}.${domain}"
     ]
   ]))
 
+  # An array of environments with an associated array of their individual full domain arrays
   url_maps = [
     for env in var.environments: {
       env     = env
@@ -231,4 +235,12 @@ output "gcp_project_id" {
 
 output "global_ip" {
   value = google_compute_global_address.lb_default.address
+}
+
+output "top_level_domains" {
+  value = local.top_level_domains
+}
+
+output "full_domains" {
+  value = local.ssl_domains
 }
