@@ -52,7 +52,8 @@ variable "environments" {
       "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
-      "max_instances" = 1
+      "max_instances" = 1,
+      "enable_cdn"    = false
     }
     "test" = {
       "name"          = "test",
@@ -64,7 +65,8 @@ variable "environments" {
       "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
-      "max_instances" = 2
+      "max_instances" = 2,
+      "enable_cdn"    = false
     }
     "staging" = {
       "name"          = "staging",
@@ -76,7 +78,8 @@ variable "environments" {
       "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
-      "max_instances" = 3
+      "max_instances" = 3,
+      "enable_cdn"    = true
     }
     "production" = {
       "name"          = "production",
@@ -88,7 +91,8 @@ variable "environments" {
       "cpu_idle"      = false,
       "concurrency"   = 80,
       "min_instances" = 0,
-      "max_instances" = 10
+      "max_instances" = 10,
+      "enable_cdn"    = true
     }
   }
 }
