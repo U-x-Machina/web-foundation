@@ -135,12 +135,16 @@ resource "google_compute_region_network_endpoint_group" "lb_default" {
 }
 
 resource "google_compute_backend_service" "lb_default" {
-  for_each              = var.environments
-  provider              = google-beta
-  project               = google_project.project.project_id
-  name                  = "lb-backend-${each.value.name}"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-  enable_cdn            = each.value.enable_cdn
+  for_each                = var.environments
+  provider                = google-beta
+  project                 = google_project.project.project_id
+  name                    = "lb-backend-${each.value.name}"
+  load_balancing_scheme   = "EXTERNAL_MANAGED"
+  enable_cdn              = each.value.enable_cdn
+  custom_response_headers = [
+    "X-Cache-Status: {cdn_cache_status}",
+    "X-Cache-ID: {cdn_cache_id}"
+  ]
 
   dynamic "backend" {
     for_each = each.value.regions
