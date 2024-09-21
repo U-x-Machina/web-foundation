@@ -5,12 +5,12 @@ inputs:
     description: 'Node.js version to use'
     required: true
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'npm'
-      - run: npm ci
-      - run: npm run build --if-present
+    - run: npm ci
+    - run: npm run build --if-present
