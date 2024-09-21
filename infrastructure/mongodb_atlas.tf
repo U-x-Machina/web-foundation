@@ -9,7 +9,7 @@ resource "mongodbatlas_project" "project" {
 # Create a Cluster
 resource "mongodbatlas_serverless_instance" "instance" {
   for_each     = var.environments
-  project_id   = mongodbatlas_project.projec.id
+  project_id   = mongodbatlas_project.project.id
   name         = each.value.name
   provider_settings_backing_provider_name   = "GCP"
   provider_settings_provider_name           = "SERVERLESS"
