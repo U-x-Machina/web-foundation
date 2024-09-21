@@ -17,7 +17,7 @@ resource "mongodbatlas_serverless_instance" "instance" {
 }
 
 output "mongodb_connection_strings" {
-  value = toset([
+  value = flatten([
     for instance in mongodbatlas_serverless_instance.instance : {
       "${instance.name}" = instance.connection_strings_standard_srv
     }
