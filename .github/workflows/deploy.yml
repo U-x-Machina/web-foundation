@@ -1,0 +1,14 @@
+# This workflow will build the project and deploy it to Google Cloud Platform
+
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [develop, release/*, main, feature/*]
+
+jobs:
+  develop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: './github/workflows/_build.yml'
