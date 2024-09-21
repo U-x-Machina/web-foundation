@@ -6,10 +6,10 @@ on:
 jobs:
   build:
     steps:
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ node-version }}
           cache: 'npm'
       - run: npm ci
       - run: npm run build --if-present
