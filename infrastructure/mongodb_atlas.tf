@@ -15,3 +15,11 @@ resource "mongodbatlas_serverless_instance" "instance" {
   provider_settings_provider_name           = "SERVERLESS"
   provider_settings_region_name             = var.mongodb_atlas_gcp_serverless_region
 }
+
+output "mongodb_connection_strings" {
+  value = toset([
+    for instance in mongodbatlas_serverless_instance.instance : {
+      instance.name: instance.connection_strings_standard_srv
+    }
+  ])
+}
