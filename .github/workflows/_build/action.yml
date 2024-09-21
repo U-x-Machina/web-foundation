@@ -2,14 +2,18 @@ name: Build Next.js
 
 on:
   workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
 
 jobs:
   build:
     steps:
-      - name: Use Node.js ${{ node-version }}
+      - name: Use Node.js ${{ inputs.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ node-version }}
+          node-version: ${{ inputs.node-version }}
           cache: 'npm'
       - run: npm ci
       - run: npm run build --if-present
