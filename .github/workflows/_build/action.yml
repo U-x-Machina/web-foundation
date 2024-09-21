@@ -1,16 +1,13 @@
-name: Build Next.js
-
-on:
-  workflow_call:
-    inputs:
-      node-version:
-        required: true
-        type: string
-
-jobs:
-  build:
-    steps:
-      - name: Use Node.js ${{ inputs.node-version }}
+name: 'Build Next.js'
+description: 'Builds the Next.js project'
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Use Node.js ${{ inputs.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
