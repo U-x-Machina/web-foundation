@@ -12,5 +12,11 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
+    - name: Build the project
+      shell: bash
+      run: npm run build --if-present
