@@ -118,3 +118,8 @@ variable "mongodb_atlas_org_id" {
   type        = string
   description = "MongoDB Atlas Organization ID"
 }
+
+variable "mongodb_atlas_gcp_serverless_region" {
+  type        = string
+  description = "MongoDB Atlas Serverless Instance region name for the GCP provider"
+}
