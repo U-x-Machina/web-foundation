@@ -20,9 +20,9 @@ jobs:
 
       - name: Test output env variable
         shell: bash
-        run: echo $PAYLOAD_PUBLIC_SERVER_URL
+        run: echo '${{ env.PAYLOAD_PUBLIC_SERVER_URL }}'
 
-      - id: 'build'
-        uses: './.github/workflows/_build'
-        with:
-          node-version: ${{ matrix.node-version }}
+      # - id: 'build'
+      #   uses: './.github/workflows/_build'
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
