@@ -123,6 +123,7 @@ output "draft_secret" {
       "${env.name}" = random_password.draft_secret[env.name].result
     }
   ])
+  sensitive = true
 }
 
 output "revalidation_key" {
@@ -131,4 +132,5 @@ output "revalidation_key" {
       "${env.name}" = random_password.revalidation_key[env.name].result
     }
   ])
+  sensitive = true
 }
