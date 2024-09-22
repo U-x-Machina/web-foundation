@@ -18,9 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Test output env variable
-        shell: bash
-        run: echo "$PAYLOAD_PUBLIC_SERVER_URL"
+      - name: 'Write .env'
+        uses: './.github/workflows/_write-env'
 
       # - id: 'build'
       #   uses: './.github/workflows/_build'

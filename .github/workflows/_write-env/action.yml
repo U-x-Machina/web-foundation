@@ -1,0 +1,14 @@
+name: 'Write .env'
+description: 'Writes .env file for the project to access relevant variables'
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: echo "DATABASE_URI=${{ vars.DATABASE_URI }}\n" > .env
+
+    - shell: bash
+      run: echo "PAYLOAD_PUBLIC_SERVER_URL=${{ vars.PAYLOAD_PUBLIC_SERVER_URL }}\n" >> .env
+
+    - shell: bash
+      run: cat .env
