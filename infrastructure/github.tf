@@ -118,9 +118,17 @@ resource "github_actions_environment_secret" "payload_secret" {
 # Outputs
 ###
 output "draft_secret" {
-  value = random_password.draft_secret.result
+  value = flatten([
+    for env in var.environments : {
+      "${env.name}" = random_password.draft_secret[env.name].result
+    }
+  ])
 }
 
 output "revalidation_key" {
-  value = random_password.revalidation_key.result
+  value = flatten([
+    for env in var.environments : {
+      "${env.name}" = random_password.revalidation_key[env.name].result
+    }
+  ])
 }
