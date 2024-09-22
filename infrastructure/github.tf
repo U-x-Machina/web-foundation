@@ -44,7 +44,7 @@ resource "github_actions_environment_variable" "payload_public_server_url" {
   repository    = data.github_repository.repo.name
   environment   = each.value.name
   variable_name = "PAYLOAD_PUBLIC_SERVER_URL"
-  value         = "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${each.key == "production" && var.domain_prod != "" ? var.domain_prod : var.domain_dev}"
+  value         = each.key == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${terraform.workspace}.${var.domain_dev}"
 }
 
 resource "github_actions_environment_variable" "next_public_server_url" {
@@ -52,7 +52,7 @@ resource "github_actions_environment_variable" "next_public_server_url" {
   repository    = data.github_repository.repo.name
   environment   = each.value.name
   variable_name = "NEXT_PUBLIC_SERVER_URL"
-  value         = "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${each.key == "production" && var.domain_prod != "" ? var.domain_prod : var.domain_dev}"
+  value         = each.key == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${terraform.workspace}.${var.domain_dev}"
 }
 
 resource "github_actions_environment_variable" "next_public_is_live" {
