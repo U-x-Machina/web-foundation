@@ -10,10 +10,13 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
-      run: echo "DATABASE_URI=${{ fromJSON(inputs.vars).DATABASE_URI }}\n" > .env
+      run: cat .env
 
     - shell: bash
-      run: echo "PAYLOAD_PUBLIC_SERVER_URL=${{ fromJSON(inputs.vars).PAYLOAD_PUBLIC_SERVER_URL }}\n" >> .env
+      run: echo "DATABASE_URI=${{ fromJSON(inputs.vars).DATABASE_URI }}" > .env
+
+    - shell: bash
+      run: echo "PAYLOAD_PUBLIC_SERVER_URL=${{ fromJSON(inputs.vars).PAYLOAD_PUBLIC_SERVER_URL }}" >> .env
 
     - shell: bash
       run: cat .env
