@@ -10,6 +10,10 @@ terraform {
       source = "mongodb/mongodbatlas"
       version = "1.20.0"
     }
+    git = {
+      source = "metio/git"
+      version = "2024.9.13"
+    }
     github = {
       source  = "integrations/github"
       version = "~> 6.0"
