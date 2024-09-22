@@ -1,4 +1,6 @@
-provider "github" {}
+provider "github" {
+  owner = var.github_org
+}
 
 data "github_repository" "repo" {
   full_name = "${var.github_org}/${var.github_repo == "" ? terraform.workspace : var.github_repo}"
@@ -7,7 +9,7 @@ data "github_repository" "repo" {
 # Save MongoDB Atlas connection strings to env vars
 resource "github_actions_environment_variable" "mondogb_connection_strings" {
   for_each      = var.environments
-  repository    = data.github_repository.repo.full_name
+  repository    = data.github_repository.repo.name
   environment   = each.value.name
   variable_name = "MONGODB_CONNECTION_STRING"
   value         = mongodbatlas_serverless_instance.instances[each.key].connection_strings_standard_srv
