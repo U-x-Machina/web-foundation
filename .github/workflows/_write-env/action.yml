@@ -3,7 +3,7 @@ description: 'Writes .env file for the project to access relevant variables'
 
 inputs:
   vars:
-    description: 'Vars as JSON. Recommended to be ${{ toJSON(vars) }}'
+    description: 'Vars as JSON'
     required: true
 
 runs:
