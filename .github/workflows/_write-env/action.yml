@@ -3,7 +3,10 @@ description: 'Writes .env file for the project to access relevant variables'
 
 inputs:
   vars:
-    description: 'Vars as JSON'
+    description: 'vars as JSON'
+    required: true
+  secrets:
+    description: 'secrets as JSON'
     required: true
 
 runs:
@@ -13,7 +16,7 @@ runs:
       run: echo "DATABASE_URI=${{ fromJSON(inputs.vars).DATABASE_URI }}" > .env
 
     - shell: bash
-      run: echo "PAYLOAD_SECRET=${{ fromJSON(inputs.vars).PAYLOAD_SECRET }}" >> .env
+      run: echo "PAYLOAD_SECRET=${{ fromJSON(inputs.secrets).PAYLOAD_SECRET }}" >> .env
 
     - shell: bash
       run: echo "PAYLOAD_PUBLIC_SERVER_URL=${{ fromJSON(inputs.vars).PAYLOAD_PUBLIC_SERVER_URL }}" >> .env

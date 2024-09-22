@@ -22,6 +22,7 @@ jobs:
         uses: './.github/workflows/_write-env'
         with:
           vars: ${{ toJson(vars) }}
+          secrets: ${{ toJson(secrets) }}
 
       - name: 'Build'
         uses: './.github/workflows/_build'
