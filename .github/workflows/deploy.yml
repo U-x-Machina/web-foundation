@@ -20,6 +20,8 @@ jobs:
 
       - name: 'Write .env'
         uses: './.github/workflows/_write-env'
+        with:
+          vars: ${{ toJson(vars) }}
 
       # - id: 'build'
       #   uses: './.github/workflows/_build'
