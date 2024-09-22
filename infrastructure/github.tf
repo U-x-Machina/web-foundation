@@ -14,7 +14,7 @@ resource "github_repository_environment" "environments" {
 resource "github_actions_environment_variable" "mondogb_connection_strings" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
-  environment   = github_repository_environment.environments[each.value.name]
+  environment   = github_repository_environment.environments[each.key].environment
   variable_name = "MONGODB_CONNECTION_STRING"
-  value         = mongodbatlas_serverless_instance.instances[each.value.name].connection_strings_standard_srv
+  value         = mongodbatlas_serverless_instance.instances[each.key].connection_strings_standard_srv
 }
