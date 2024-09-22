@@ -20,7 +20,7 @@ jobs:
 
       - name: Test output env variable
         shell: bash
-        run: echo '${{ vars.PAYLOAD_PUBLIC_SERVER_URL }}'
+        run: echo "$PAYLOAD_PUBLIC_SERVER_URL"
 
       # - id: 'build'
       #   uses: './.github/workflows/_build'
