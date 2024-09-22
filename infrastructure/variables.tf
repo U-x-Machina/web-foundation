@@ -123,3 +123,14 @@ variable "mongodb_atlas_gcp_serverless_region" {
   type        = string
   description = "MongoDB Atlas Serverless Instance region name for the GCP provider"
 }
+
+variable "github_org" {
+  type        = string
+  description = "Your GitHub organisation or user owning the connected repository in slug format"
+}
+
+variable "github_repo" {
+  type        = string
+  description = "The name of the connected repository in slug format. If empty, Terraform workspace name will be used as an attempt."
+  default     = ""
+}

@@ -7,7 +7,7 @@ resource "mongodbatlas_project" "project" {
 }
 
 # Create a Cluster
-resource "mongodbatlas_serverless_instance" "instance" {
+resource "mongodbatlas_serverless_instance" "instances" {
   for_each     = var.environments
   project_id   = mongodbatlas_project.project.id
   name         = each.value.name
@@ -18,7 +18,7 @@ resource "mongodbatlas_serverless_instance" "instance" {
 
 output "mongodb_connection_strings" {
   value = flatten([
-    for instance in mongodbatlas_serverless_instance.instance : {
+    for instance in mongodbatlas_serverless_instance.instances : {
       "${instance.name}" = instance.connection_strings_standard_srv
     }
   ])
