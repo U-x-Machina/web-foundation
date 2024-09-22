@@ -7,8 +7,9 @@ on:
     branches: [develop, release/*, main, feature/*]
 
 jobs:
-  develop:
+  development:
     runs-on: ubuntu-latest
+    environment: development
 
     strategy:
       matrix:
@@ -16,6 +17,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Test output env variable
+        shell: bash
+        run: echo $PAYLOAD_PUBLIC_SERVER_URL
 
       - id: 'build'
         uses: './.github/workflows/_build'
