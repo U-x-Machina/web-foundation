@@ -30,7 +30,8 @@ variable "google_project_services" {
   description = "Google Project Services to be enabled"
   default = [
     "run.googleapis.com",
-    "compute.googleapis.com"
+    "compute.googleapis.com",
+    "artifactregistry.googleapis.com"
   ]
 }
 
