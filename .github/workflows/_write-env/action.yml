@@ -13,7 +13,7 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
-      run: echo 'DATABASE_URI=""${{ fromJSON(inputs.secrets).DATABASE_URI }}"' > .env
+      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' > .env
 
     - shell: bash
       run: echo 'PAYLOAD_SECRET="${{ fromJSON(inputs.secrets).PAYLOAD_SECRET }}"' >> .env
