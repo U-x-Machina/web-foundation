@@ -12,6 +12,9 @@ name: 'Deploy to GCP'
 description: 'Builds and pushes a Docker container to Google Artifact Registry and deploys it to Cloud Run'
 
 inputs:
+  gcp-project-id:
+    description: 'Google Cloud Platform Project ID'
+    required: true
   gcp-service-account:
     description: 'Google Cloud Platform Service Account used for deployments'
     required: true
@@ -25,8 +28,8 @@ runs:
   steps:
     - name: Google Auth
       id: auth
-      uses: 'google-github-actions/auth@v0'
+      uses: 'google-github-actions/auth@v2'
       with:
-        token_format: 'access_token'
+        project_id: '${{ inputs.gcp-project-id }}'
         workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
         service_account: '${{ inputs.gcp-service-account }}'

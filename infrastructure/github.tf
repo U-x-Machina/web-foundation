@@ -33,7 +33,7 @@ resource "random_password" "revalidation_key" {
 resource "github_actions_variable" "gcp_project_id" {
   repository    = data.github_repository.repo.name
   variable_name = "gcp_project_id"
-  value         = google_project.project.id
+  value         = google_project.project.project_id
 }
 
 ###

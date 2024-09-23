@@ -21,5 +21,6 @@ jobs:
       - name: 'Deploy'
         uses: './.github/workflows/_deploy'
         with:
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
