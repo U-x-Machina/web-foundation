@@ -50,6 +50,7 @@ runs:
         password: ${{ steps.auth.outputs.access_token }}
 
     - name: Build and Push Container
+      shell: bash
       run: |-
         docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.environment }}/${{ inputs.gcp-project-id }}:${{ github.sha }}" ./
         docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.environment }}/${{ inputs.gcp-project-id }}:${{ github.sha }}"
