@@ -1,0 +1,6 @@
+.github
+.next
+.vscode
+docs
+infrastructure
+node_modules
