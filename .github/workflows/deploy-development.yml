@@ -19,7 +19,7 @@ jobs:
           secrets: ${{ toJson(secrets) }}
 
       - name: 'Deploy'
-        uses: './.github/workflows/_build'
+        uses: './.github/workflows/_deploy'
         with:
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
