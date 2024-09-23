@@ -6,7 +6,7 @@ resource "mongodbatlas_project" "project" {
   name      = google_project.project.name
 }
 
-# Create a Cluster
+# Create clusters for each env
 resource "mongodbatlas_serverless_instance" "instances" {
   for_each     = var.environments
   project_id   = mongodbatlas_project.project.id
@@ -16,6 +16,30 @@ resource "mongodbatlas_serverless_instance" "instances" {
   provider_settings_region_name             = var.mongodb_atlas_gcp_serverless_region
 }
 
+# Create database users for each cluster
+resource "random_password" "db_password" {
+  for_each         = var.environments
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "mongodbatlas_database_user" "db_user" {
+  for_each            = var.environments
+  username            = "admin"
+  password            = random_password.db_password.result
+  project_id          = mongodbatlas_project.project.id
+  auth_database_name  = "admin"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = mongodbatlas_serverless_instance.instances[each.key].name
+  }
+}
+
+###
+# Outputs
+###
 output "mongodb_connection_strings" {
   value = flatten([
     for instance in mongodbatlas_serverless_instance.instances : {
