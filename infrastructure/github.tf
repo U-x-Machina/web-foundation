@@ -8,32 +8,23 @@ data "github_repository" "repo" {
 
 # Generate Payload secrets for each env
 resource "random_password" "payload_secret" {
-  for_each         = var.environments
-  length           = 24
-  special          = true
-  override_special = "!#%*()-_=+[]{}<>:?"
+  for_each = var.environments
+  length   = 24
+  special  = true
 }
 
 resource "random_password" "draft_secret" {
-  for_each  = var.environments
-  length    = 16
-  special   = false
-  lower     = true
+  for_each = var.environments
+  length   = 16
+  special  = false
+  lower    = true
 }
 
 resource "random_password" "revalidation_key" {
-  for_each  = var.environments
-  length    = 16
-  special   = false
-  lower     = true
-}
-
-# Generate Payload secrets for each env
-resource "random_password" "payload" {
-  for_each         = var.environments
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  for_each = var.environments
+  length   = 16
+  special  = false
+  lower    = true
 }
 
 ###
