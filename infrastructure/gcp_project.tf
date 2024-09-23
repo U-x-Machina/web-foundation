@@ -224,6 +224,15 @@ resource "google_compute_global_forwarding_rule" "lb_default" {
   port_range            = "443"
 }
 
+resource "google_artifact_registry_repository" "repositories" {
+  for_each      = var.environments
+  project       = google_project.project.project_id
+  location      = var.gar_location
+  repository_id = each.value.name
+  description   = "${each.value.name} repository"
+  format        = "DOCKER"
+}
+
 # Outputs
 output "gcp_project_name" {
   value = google_project.project.name

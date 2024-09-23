@@ -98,10 +98,16 @@ variable "environments" {
   }
 }
 
+variable "gar_location" {
+  type        = string
+  description = "Google Artifact Registry location"
+  default     = "europe"
+}
+
 variable "default_environment" {
-  type = string
+  type        = string
   description = "Default environment to be used for Compute URL Map in case no host / URL is matched"
-  default = "production"
+  default     = "production"
 }
 
 variable "domain_dev" {
