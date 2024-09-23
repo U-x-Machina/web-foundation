@@ -29,3 +29,4 @@ jobs:
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           gar-location: ${{ vars.GAR_LOCATION }}
+          gar-repository: ${{ vars.GAR_REPOSITORY }}

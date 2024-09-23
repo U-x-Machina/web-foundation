@@ -225,11 +225,10 @@ resource "google_compute_global_forwarding_rule" "lb_default" {
 }
 
 resource "google_artifact_registry_repository" "repositories" {
-  for_each      = var.environments
   project       = google_project.project.project_id
   location      = var.gar_location
-  repository_id = each.value.name
-  description   = "${each.value.name} repository"
+  repository_id = var.gar_repository
+  description   = "Builds repository"
   format        = "DOCKER"
 }
 

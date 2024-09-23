@@ -104,6 +104,12 @@ variable "gar_location" {
   default     = "europe"
 }
 
+variable "gar_repository" {
+  type        = string
+  description = "Google Artifact Registry repository name"
+  default     = "builds"
+}
+
 variable "default_environment" {
   type        = string
   description = "Default environment to be used for Compute URL Map in case no host / URL is matched"

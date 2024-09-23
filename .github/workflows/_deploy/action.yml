@@ -27,6 +27,9 @@ inputs:
   gar-location:
     description: 'Google Artifact Registry location'
     required: true
+  gar-repository:
+    description: 'Google Artifact Registry repository name'
+    required: true
 
 runs:
   using: 'composite'
@@ -52,5 +55,5 @@ runs:
     - name: Build and Push Container
       shell: bash
       run: |-
-        docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.environment }}/${{ inputs.gcp-project-id }}:${{ github.sha }}" ./
-        docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.environment }}/${{ inputs.gcp-project-id }}:${{ github.sha }}"
+        docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}" ./
+        docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
