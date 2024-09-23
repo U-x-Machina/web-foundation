@@ -46,14 +46,3 @@ resource "mongodbatlas_database_user" "db_user" {
     type = "CLUSTER"
   }
 }
-
-###
-# Outputs
-###
-output "mongodb_connection_strings" {
-  value = flatten([
-    for instance in mongodbatlas_serverless_instance.instances : {
-      "${instance.name}" = instance.connection_strings_standard_srv
-    }
-  ])
-}

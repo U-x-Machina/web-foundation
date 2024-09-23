@@ -63,22 +63,6 @@ resource "github_actions_environment_variable" "next_public_is_live" {
   value         = each.key == "production" ? true : false
 }
 
-resource "github_actions_environment_variable" "database_uri" {
-  for_each      = var.environments
-  repository    = data.github_repository.repo.name
-  environment   = each.value.name
-  variable_name = "DATABASE_URI"
-  value         = mongodbatlas_serverless_instance.instances[each.key].connection_strings_standard_srv
-}
-
-resource "github_actions_environment_variable" "database_user" {
-  for_each      = var.environments
-  repository    = data.github_repository.repo.name
-  environment   = each.value.name
-  variable_name = "DATABASE_USER"
-  value         = mongodbatlas_database_user.db_user[each.key].username
-}
-
 resource "github_actions_environment_variable" "payload_public_draft_secret" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
@@ -114,12 +98,12 @@ resource "github_actions_environment_variable" "next_private_revalidation_key" {
 ###
 # Environment secrets
 ###
-resource "github_actions_environment_secret" "database_password" {
+resource "github_actions_environment_secret" "database_uri" {
   for_each          = var.environments
   repository        = data.github_repository.repo.name
   environment       = each.value.name
-  secret_name       = "DATABASE_PASSWORD"
-  plaintext_value   = mongodbatlas_database_user.db_user[each.key].password
+  secret_name       = "DATABASE_URI"
+  plaintext_value   = "mongodb+srv://${mongodbatlas_database_user.db_user[each.key].username}:${mongodbatlas_database_user.db_user[each.key].password}@${split("mongodb+srv://", mongodbatlas_serverless_instance.instances[each.key].connection_strings_standard_srv)[1]}"
 }
 
 resource "github_actions_environment_secret" "payload_secret" {
