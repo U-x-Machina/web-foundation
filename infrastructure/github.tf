@@ -28,6 +28,15 @@ resource "random_password" "revalidation_key" {
 }
 
 ###
+# Repository variables
+###
+resource "github_actions_variable" "gcp_project_id" {
+  repository    = data.github_repository.repo.name
+  variable_name = "gcp_project_id"
+  value         = google_project.project.id
+}
+
+###
 # Environment variables
 ###
 resource "github_actions_environment_variable" "payload_public_server_url" {

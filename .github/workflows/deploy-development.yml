@@ -1,19 +1,13 @@
-# This workflow will build the project and deploy it to Google Cloud Platform
-
-name: Deploy to GCP
+name: Deploy to development
 
 on:
   push:
-    branches: [develop, release/*, main, feature/*]
+    branches: [develop, feature/*]
 
 jobs:
-  development:
+  deploy:
     runs-on: ubuntu-latest
     environment: development
-
-    strategy:
-      matrix:
-        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +18,8 @@ jobs:
           vars: ${{ toJson(vars) }}
           secrets: ${{ toJson(secrets) }}
 
-      - name: 'Build'
+      - name: 'Deploy'
         uses: './.github/workflows/_build'
         with:
-          node-version: ${{ matrix.node-version }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
