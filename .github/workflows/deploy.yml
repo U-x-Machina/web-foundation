@@ -24,7 +24,7 @@ jobs:
           vars: ${{ toJson(vars) }}
           secrets: ${{ toJson(secrets) }}
 
-      - name: 'Build'
-        uses: './.github/workflows/_build'
-        with:
-          node-version: ${{ matrix.node-version }}
+      # - name: 'Build'
+      #   uses: './.github/workflows/_build'
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
