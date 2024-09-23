@@ -27,7 +27,7 @@ resource "random_password" "db_password" {
 resource "mongodbatlas_database_user" "db_user" {
   for_each            = var.environments
   username            = "admin"
-  password            = random_password.db_password.result
+  password            = random_password.db_password[each.key].result
   project_id          = mongodbatlas_project.project.id
   auth_database_name  = "admin"
 
