@@ -32,8 +32,18 @@ resource "mongodbatlas_database_user" "db_user" {
   auth_database_name  = "admin"
 
   roles {
-    role_name     = "readWrite"
-    database_name = mongodbatlas_serverless_instance.instances[each.key].name
+    role_name     = "dbAdminAnyDatabase"
+    database_name = "admin"
+  }
+
+  roles {
+    role_name     = "readWriteAnyDatabase"
+    database_name = "admin"
+  }
+
+  scopes {
+    name = mongodbatlas_serverless_instance.instances[each.key].name
+    type = "CLUSTER"
   }
 }
 
