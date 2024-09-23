@@ -25,6 +25,10 @@ inputs:
 runs:
   using: 'composite'
 
+  permissions:
+    contents: 'read'
+    id-token: 'write'
+
   steps:
     - name: Google Auth
       id: auth
