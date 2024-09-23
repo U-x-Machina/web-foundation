@@ -6,8 +6,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
     environment: development
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
