@@ -9,9 +9,9 @@ data "github_repository" "repo" {
 # Generate Payload secrets for each env
 resource "random_password" "payload_secret" {
   for_each         = var.environments
-  length           = 16
+  length           = 24
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "!#%*()-_=+[]{}<>:?"
 }
 
 resource "random_password" "draft_secret" {

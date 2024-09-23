@@ -19,9 +19,9 @@ resource "mongodbatlas_serverless_instance" "instances" {
 # Create database users for each cluster
 resource "random_password" "db_password" {
   for_each         = var.environments
-  length           = 16
+  length           = 24
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "!#%*()-_+[]{}<>?"
 }
 
 resource "mongodbatlas_database_user" "db_user" {
