@@ -224,7 +224,7 @@ resource "google_compute_global_forwarding_rule" "lb_default" {
   port_range            = "443"
 }
 
-resource "google_artifact_registry_repository" "repositories" {
+resource "google_artifact_registry_repository" "builds_repository" {
   project       = google_project.project.project_id
   location      = var.gar_location
   repository_id = var.gar_repository
