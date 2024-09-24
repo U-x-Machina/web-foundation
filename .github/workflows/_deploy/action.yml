@@ -88,13 +88,17 @@ runs:
       run: |
         atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
 
-    - name: Build and Push Container
+    - name: Build the Container
       shell: bash
       run: |-
         docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}" ./
-        docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
 
     - name: Remove Github Actions runner IP from MongDB Atlas Access List
       shell: bash
       run: |
         atlas accessLists delete ${{ steps.get_gh_runner_ip.outputs.ip_address }} --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --force
+
+    - name: Push the Container
+      shell: bash
+      run: |-
+        docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
