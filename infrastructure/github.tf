@@ -36,6 +36,21 @@ resource "github_actions_variable" "gcp_project_id" {
   value         = google_project.project.project_id
 }
 
+resource "github_actions_variable" "mongodb_atlas_public_api_key" {
+  repository    = data.github_repository.repo.name
+  variable_name = "mongodb_atlas_public_api_key"
+  value         = mongodbatlas_project_api_key.project_key.public_key
+}
+
+###
+# Repository secrets
+###
+resource "github_actions_secret" "mongodb_atlas_private_api_key" {
+  repository      = data.github_repository.repo.name
+  secret_name     = "mongodb_atlas_private_api_key"
+  plaintext_value = mongodbatlas_project_api_key.project_key.private_key
+}
+
 ###
 # Environment variables
 ###

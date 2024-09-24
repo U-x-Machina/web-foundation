@@ -10,7 +10,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-# RUN --mount=type=cache,id=pnpm2,target=/pnpm/store pnpm add sharp
 RUN pnpm run build
 
 FROM base

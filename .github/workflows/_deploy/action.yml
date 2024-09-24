@@ -4,9 +4,11 @@
 #
 # 1. Authenticate to Google Cloud
 # 2. Authenticate Docker to Artifact Registry
-# 3. Build a docker container
-# 4. Publish it to Google Artifact Registry
-# 5. Deploy it to Cloud Run
+# 3. Whitelist Github Actions worker IP to MongoDB Atlas
+# 4. Build a docker container
+# 5. Remote the whitelisted IP from MongoDB Atlas
+# 6. Publish the Docker image to Google Artifact Registry
+# 7. Deploy it to Cloud Run
 
 name: 'Deploy to GCP'
 description: 'Builds and pushes a Docker container to Google Artifact Registry and deploys it to Cloud Run'
@@ -51,6 +53,8 @@ runs:
         registry: ${{ inputs.gar-location }}-docker.pkg.dev
         username: oauth2accesstoken
         password: ${{ steps.auth.outputs.access_token }}
+
+    
 
     - name: Build and Push Container
       shell: bash
