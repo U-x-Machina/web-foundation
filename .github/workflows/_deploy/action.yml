@@ -32,6 +32,24 @@ inputs:
   gar-repository:
     description: 'Google Artifact Registry repository name'
     required: true
+  mongodb-atlas-public-api-key:
+    description: 'MongoDB Atlas public API key'
+    required: true
+  mongodb-atlas-private-api-key:
+    description: 'MongoDB Atlas private API key'
+    required: true
+  mongodb-atlas-org-id:
+    description: 'MongoDB Atlas organization ID'
+    required: true
+  mongodb-atlas-project-id:
+    description: 'MongoDB Atlas project ID'
+    required: true
+
+env:
+  MONGODB_ATLAS_PUBLIC_API_KEY: ${{ inputs.mongodb-atlas-public-api-key }}
+  MONGODB_ATLAS_PRIVATE_API_KEY: ${{ inputs.mongodb-atlas-private-api-key }}
+  MONGODB_ATLAS_ORG_ID: ${{ inputs.mongodb-atlas-org-id }}
+  MONGODB_ATLAS_PROJECT_ID: ${{ inputs.mongodb-atlas-project-id }}
 
 runs:
   using: 'composite'
@@ -54,10 +72,27 @@ runs:
         username: oauth2accesstoken
         password: ${{ steps.auth.outputs.access_token }}
 
-    
+    - name: Get the public IP of this runner
+      id: get_gh_runner_ip
+      shell: bash
+      run: |
+        echo "ip_address=$(curl https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+
+    - name: Setup MongoDB Atlas cli
+      uses: mongodb/atlas-github-action@v0.2.0
+
+    - name: Add Github Actions runner IP to MongoDB Atlas Access List
+      shell: bash
+      run: |
+        atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
 
     - name: Build and Push Container
       shell: bash
       run: |-
         docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}" ./
         docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
+
+    - name: Remove Github Actions runner IP from MongDB Atlas Access List
+      shell: bash
+      run: |
+        atlas accessLists delete ${{ steps.get_gh_runner_ip.outputs.ip_address }} --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --force

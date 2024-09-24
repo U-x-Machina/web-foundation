@@ -30,3 +30,7 @@ jobs:
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           gar-location: ${{ vars.GAR_LOCATION }}
           gar-repository: ${{ vars.GAR_REPOSITORY }}
+          mongodb-atlas-public-api-key: ${{ vars.MONGODB_ATLAS_PUBLIC_API_KEY }}
+          mongodb-atlas-private-api-key: ${{ secrets.MONGODB_ATLAS_PRIVATE_API_KEY }}
+          mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
+          mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
