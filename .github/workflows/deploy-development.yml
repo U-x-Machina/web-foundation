@@ -5,12 +5,14 @@ on:
     branches: [develop, feature/*]
 
 jobs:
-  deploy:
+  build:
     environment: development
     permissions:
       contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build.outputs.image }}
 
     steps:
       - uses: actions/checkout@v4
@@ -36,9 +38,21 @@ jobs:
           mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
           mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
 
+  deploy:
+    needs: build
+    environment: development
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ${{ fromJSON(vars.GCP_SERVICES) }}
+
+    steps:
       - name: 'Deploy Docker Container to Google Cloud Run'
         id: deploy
         uses: './.github/workflows/_deploy-container'
         with:
-          image: ${{ steps.build.outputs.image }}
-          services: ${{ vars.GCP_SERVICES }}
+          image: ${{ needs.build.outputs.image }}
+          service: ${{ matrix.service }}

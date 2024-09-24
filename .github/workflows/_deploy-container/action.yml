@@ -12,13 +12,9 @@ inputs:
   image:
     description: 'Docker Container image URL to deploy'
     required: true
-  services:
-    description: 'Google Cloud Run services to deploy the image to'
+  service:
+    description: 'Google Cloud Run service to deploy the image to'
     required: true
-
-strategy:
-  matrix:
-    service: ${{ fromJSON(inputs.services) }}
 
 runs:
   using: 'composite'
@@ -28,5 +24,5 @@ runs:
       id: deploy
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: ${{ matrix.service }}
+        service: ${{ inputs.service }}
         image: ${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}

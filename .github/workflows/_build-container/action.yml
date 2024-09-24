@@ -109,4 +109,3 @@ runs:
       shell: bash
       run: |-
         docker push ${{ steps.build.outputs.image }}
-        echo "::set-output name=image::${{ steps.build.outputs.image }}"
