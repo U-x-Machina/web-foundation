@@ -32,13 +32,19 @@ resource "random_password" "revalidation_key" {
 ###
 resource "github_actions_variable" "gcp_project_id" {
   repository    = data.github_repository.repo.name
-  variable_name = "gcp_project_id"
+  variable_name = "GCP_PROJECT_ID"
   value         = google_project.project.project_id
+}
+
+resource "github_actions_variable" "mongodb_atlas_project_id" {
+  repository    = data.github_repository.repo.name
+  variable_name = "MONGODB_ATLAS_PROJECT_ID"
+  value         = mongodbatlas_project.project.id
 }
 
 resource "github_actions_variable" "mongodb_atlas_public_api_key" {
   repository    = data.github_repository.repo.name
-  variable_name = "mongodb_atlas_public_api_key"
+  variable_name = "MONGODB_ATLAS_PUBLIC_API_KEY"
   value         = mongodbatlas_project_api_key.project_key.public_key
 }
 
@@ -47,7 +53,7 @@ resource "github_actions_variable" "mongodb_atlas_public_api_key" {
 ###
 resource "github_actions_secret" "mongodb_atlas_private_api_key" {
   repository      = data.github_repository.repo.name
-  secret_name     = "mongodb_atlas_private_api_key"
+  secret_name     = "MONGODB_ATLAS_PRIVATE_API_KEY"
   plaintext_value = mongodbatlas_project_api_key.project_key.private_key
 }
 
