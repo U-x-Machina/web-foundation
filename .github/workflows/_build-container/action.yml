@@ -1,4 +1,4 @@
-# This workflow builds and pushes a Docker container to Google Artifact Registry and deploys it to Cloud Run.
+# This workflow builds and pushes a Docker container to Google Artifact Registry.
 #
 # Overview:
 #
@@ -8,10 +8,9 @@
 # 4. Build a docker container
 # 5. Remote the whitelisted IP from MongoDB Atlas
 # 6. Publish the Docker image to Google Artifact Registry
-# 7. Deploy it to Cloud Run
 
-name: 'Deploy to GCP'
-description: 'Builds and pushes a Docker container to Google Artifact Registry and deploys it to Cloud Run'
+name: 'Build Docker Container'
+description: 'Builds and pushes a Docker container to Google Artifact Registry'
 
 inputs:
   environment:
@@ -44,6 +43,11 @@ inputs:
   mongodb-atlas-project-id:
     description: 'MongoDB Atlas project ID'
     required: true
+
+outputs:
+  image:
+    description: "Docker image URL"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
 
 runs:
   using: 'composite'
@@ -91,7 +95,8 @@ runs:
     - name: Build the Container
       shell: bash
       run: |-
-        docker build -t "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}" ./
+        IMAGE="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
+        docker build -t ${IMAGE} ./
 
     - name: Remove Github Actions runner IP from MongDB Atlas Access List
       shell: bash
@@ -101,4 +106,5 @@ runs:
     - name: Push the Container
       shell: bash
       run: |-
-        docker push "${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
+        docker push ${IMAGE}
+        echo "::set-output name=image::$(echo $IMAGE)"

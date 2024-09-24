@@ -1,0 +1,32 @@
+# This workflow deploys an existing Docker Container to multiple Google Cloud Run services (multi-region).
+#
+# Overview:
+#
+# 1. Sets a matrix strategy for multiple services
+# 2. Deploys input image to each Google Cloud Run from the matrix strategy
+
+name: 'Deploy Docker Container to Google Cloud Run'
+description: 'Deploys an existing Docker Container to multiple Google Cloud Run services'
+
+inputs:
+  image:
+    description: 'Docker Container image URL to deploy'
+    required: true
+  services:
+    description: 'Google Cloud Run services to deploy the image to'
+    required: true
+
+strategy:
+  matrix:
+    service: ${{fromJSON(inputs.services)}}
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Deploy to Cloud Run
+      id: deploy
+      uses: google-github-actions/deploy-cloudrun@v2
+      with:
+        service: ${{ matrix.service }}
+        image: ${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}
