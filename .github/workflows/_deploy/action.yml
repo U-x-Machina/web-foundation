@@ -45,12 +45,6 @@ inputs:
     description: 'MongoDB Atlas project ID'
     required: true
 
-env:
-  MONGODB_ATLAS_PUBLIC_API_KEY: ${{ inputs.mongodb-atlas-public-api-key }}
-  MONGODB_ATLAS_PRIVATE_API_KEY: ${{ inputs.mongodb-atlas-private-api-key }}
-  MONGODB_ATLAS_ORG_ID: ${{ inputs.mongodb-atlas-org-id }}
-  MONGODB_ATLAS_PROJECT_ID: ${{ inputs.mongodb-atlas-project-id }}
-
 runs:
   using: 'composite'
 
@@ -78,7 +72,15 @@ runs:
       run: |
         echo "ip_address=$(curl https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
 
-    - name: Setup MongoDB Atlas cli
+    - name: Set MongoDB Atlas CLI env vars
+      shell: bash
+      run: |-
+        echo "MONGODB_ATLAS_PUBLIC_API_KEY=${{ inputs.mongodb-atlas-public-api-key }} >> $GITHUB_ENV"
+        echo "MONGODB_ATLAS_PRIVATE_API_KEY=${{ inputs.mongodb-atlas-private-api-key }} >> $GITHUB_ENV"
+        echo "MONGODB_ATLAS_ORG_ID=${{ inputs.mongodb-atlas-org-id }} >> $GITHUB_ENV"
+        echo "MONGODB_ATLAS_PROJECT_ID=${{ inputs.mongodb-atlas-project-id }} >> $GITHUB_ENV"
+
+    - name: Setup MongoDB Atlas CLI
       uses: mongodb/atlas-github-action@v0.2.0
 
     - name: Add Github Actions runner IP to MongoDB Atlas Access List
