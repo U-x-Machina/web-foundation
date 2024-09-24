@@ -60,6 +60,14 @@ resource "github_actions_secret" "mongodb_atlas_private_api_key" {
 ###
 # Environment variables
 ###
+resource "github_actions_environment_variable" "gcp_regions" {
+  for_each      = var.environments
+  repository    = data.github_repository.repo.name
+  environment   = each.value.name
+  variable_name = "GCP_REGIONS"
+  value         = each.value.regions
+}
+
 resource "github_actions_environment_variable" "payload_public_server_url" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
