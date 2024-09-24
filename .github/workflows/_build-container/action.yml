@@ -93,10 +93,12 @@ runs:
         atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
 
     - name: Build the Container
+      id: build
       shell: bash
       run: |-
         IMAGE="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
         docker build -t ${IMAGE} ./
+        echo "image=${IMAGE}" >> $GITHUB_OUTPUT
 
     - name: Remove Github Actions runner IP from MongDB Atlas Access List
       shell: bash
@@ -106,5 +108,5 @@ runs:
     - name: Push the Container
       shell: bash
       run: |-
-        docker push ${IMAGE}
-        echo "::set-output name=image::$(echo $IMAGE)"
+        docker push ${{ steps.build.outputs.image }}
+        echo "::set-output name=image::${{ steps.build.outputs.image }}"

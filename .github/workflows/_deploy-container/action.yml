@@ -18,7 +18,7 @@ inputs:
 
 strategy:
   matrix:
-    service: ${{fromJSON(inputs.services)}}
+    service: ${{ fromJSON(inputs.services) }}
 
 runs:
   using: 'composite'
