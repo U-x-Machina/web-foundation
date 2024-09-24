@@ -45,3 +45,12 @@ resource "mongodbatlas_database_user" "db_user" {
     type = "CLUSTER"
   }
 }
+
+# Create API key for the project (needed by Github Actions to whitelist its IP)
+resource "mongodbatlas_project_api_key" "project_key" {
+  description   = "Github Actions API key"
+  project_assignment {
+    project_id = mongodbatlas_project.project.id
+    role_names = ["GROUP_OWNER"]
+  }
+}
