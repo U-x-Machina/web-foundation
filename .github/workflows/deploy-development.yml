@@ -40,7 +40,11 @@ jobs:
 
       - name: 'Test var'
         shell: bash
-        run: echo ${{ vars.GCP_SERVICES }}
+        run: echo '${{ vars.GCP_SERVICES }}'
+
+      - name: 'Test JSON'
+        shell: bash
+        run: echo '${{ toJson(fromJson(vars.GCP_SERVICES)) }}'
 
   deploy:
     needs: build
