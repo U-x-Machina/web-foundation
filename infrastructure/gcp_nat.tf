@@ -22,7 +22,7 @@ resource "google_vpc_access_connector" "nat" {
   for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
-  name     = "vpc-connector-${each.value.service.name}-${each.value.region}"
+  name     = "vpcc-${substr(sha256("${each.value.service.name}-${each.value.region}"), 0, 16)}"
   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 
   subnet {
