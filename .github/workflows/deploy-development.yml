@@ -53,7 +53,8 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.services-matrix) }}
+      matrix:
+        service: ${{ fromJson(vars.GCP_SERVICES) }}
 
     steps:
       - uses: actions/checkout@v4
