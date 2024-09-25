@@ -43,7 +43,7 @@ jobs:
         id: services
         shell: bash
         run: |-
-          echo "matrix=$(echo ${{ vars.GCP_SERVICES }} | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo '${{ vars.GCP_SERVICES }}' | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
