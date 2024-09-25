@@ -65,7 +65,7 @@ resource "github_actions_environment_variable" "gcp_services" {
   repository    = data.github_repository.repo.name
   environment   = each.value.name
   variable_name = "GCP_SERVICES"
-  value         = jsonencode([for region in each.value.regions: "${each.value.name}-${region}"])
+  value         = jsonencode([for region in each.value.regions: google_cloud_run_v2_service.services["${each.value.name}.${region}"].id])
 }
 
 resource "github_actions_environment_variable" "payload_public_server_url" {
