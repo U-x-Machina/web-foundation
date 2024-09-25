@@ -15,6 +15,7 @@ resource "google_compute_subnetwork" "nat" {
   name          = "static-egress-ip-${each.value.service.name}-${each.value.region}"
   ip_cidr_range = "10.85.${index(local.subnet_indices, "${each.value.service.name}.${each.value.region}")}.0/28"
   network       = google_compute_network.nat.id
+  region        = each.value.region
 }
 
 resource "google_compute_router" "nat" {
