@@ -38,6 +38,10 @@ jobs:
           mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
           mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
 
+      - name: 'Test var'
+        shell: bash
+        run: echo ${{ vars.GCP_SERVICES }}
+
   deploy:
     needs: build
     environment: development
