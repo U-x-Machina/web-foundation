@@ -36,7 +36,10 @@ resource "google_cloud_run_v2_service" "services" {
       max_instance_count = each.value.service.max_instances
     }
     vpc_access {
-      connector = google_vpc_access_connector.nat.id
+      network_interfaces {
+        network = google_compute_network.nat.id
+        subnetwork = google_compute_subnetwork.nat.id
+      }
       egress    = "ALL_TRAFFIC"
     }
     max_instance_request_concurrency = each.value.service.concurrency
