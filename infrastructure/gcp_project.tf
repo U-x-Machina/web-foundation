@@ -123,7 +123,7 @@ data "google_service_account" "default_compute" {
 }
 
 resource "google_service_account_iam_binding" "default_compute" {
-  service_account_id = google_service_account.default_compute.name
+  service_account_id = data.google_service_account.default_compute.name
   role               = "roles/iam.serviceAccountUser"
 
   members = [
