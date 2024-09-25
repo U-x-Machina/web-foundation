@@ -20,9 +20,14 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Deploy to Cloud Run
-      id: deploy
-      uses: google-github-actions/deploy-cloudrun@v2
-      with:
-        service: ${{ inputs.service }}
-        image: ${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}
+    - name: Test output
+      shell: bash
+      run: |-
+        echo 'Service :${{ inputs.service }}, image: ${{ inputs.image }}
+
+    # - name: Deploy to Cloud Run
+    #   id: deploy
+    #   uses: google-github-actions/deploy-cloudrun@v2
+    #   with:
+    #     service: ${{ inputs.service }}
+    #     image: ${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}

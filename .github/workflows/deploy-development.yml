@@ -53,8 +53,7 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        service: ${{ needs.build.outputs.services-matrix }}
+      matrix: ${{ fromJson(needs.build.outputs.services-matrix) }}
 
     steps:
       - name: 'Deploy Docker Container to Google Cloud Run'
