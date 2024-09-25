@@ -24,7 +24,7 @@ jobs:
           vars: ${{ toJson(vars) }}
           secrets: ${{ toJson(secrets) }}
 
-      - name: 'Build Docker Container'
+      - name: 'Build and push Docker Container'
         id: build
         uses: './.github/workflows/_build-container'
         with:
@@ -53,8 +53,7 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        service: ${{ fromJson(vars.GCP_SERVICES) }}
+      matrix: ${{ fromJson(needs.build.outputs.services-matrix) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -63,5 +62,8 @@ jobs:
         id: deploy
         uses: './.github/workflows/_deploy-container'
         with:
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           image: ${{ needs.build.outputs.image }}
           service: ${{ matrix.service }}

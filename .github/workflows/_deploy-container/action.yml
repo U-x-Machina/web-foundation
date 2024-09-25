@@ -2,13 +2,22 @@
 #
 # Overview:
 #
-# 1. Sets a matrix strategy for multiple services
-# 2. Deploys input image to each Google Cloud Run from the matrix strategy
+# 1. Authenticates to Google Cloud Platform using Identity Federation
+# 2. Deploys input image to given Google Cloud Run service
 
 name: 'Deploy Docker Container to Google Cloud Run'
 description: 'Deploys an existing Docker Container to multiple Google Cloud Run services'
 
 inputs:
+  gcp-project-id:
+    description: 'Google Cloud Platform Project ID'
+    required: true
+  gcp-service-account:
+    description: 'Google Cloud Platform Service Account used for deployments'
+    required: true
+  gcp-workload-identity-provider:
+    description: 'Google Cloud Platform Workload Identity Provider name'
+    required: true
   image:
     description: 'Docker Container image URL to deploy'
     required: true
@@ -20,14 +29,18 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Test output
-      shell: bash
-      run: |-
-        echo 'Service :${{ inputs.service }}, image: ${{ inputs.image }}
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: access_token
+        project_id: '${{ inputs.gcp-project-id }}'
+        workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
+        service_account: '${{ inputs.gcp-service-account }}'
 
-    # - name: Deploy to Cloud Run
-    #   id: deploy
-    #   uses: google-github-actions/deploy-cloudrun@v2
-    #   with:
-    #     service: ${{ inputs.service }}
-    #     image: ${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}
+    - name: Deploy to Cloud Run
+      id: deploy
+      uses: google-github-actions/deploy-cloudrun@v2
+      with:
+        service: ${{ inputs.service }}
+        image: ${{ inputs.image }}
