@@ -56,6 +56,8 @@ jobs:
       matrix: ${{ fromJson(needs.build.outputs.services-matrix) }}
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: 'Deploy Docker Container to Google Cloud Run'
         id: deploy
         uses: './.github/workflows/_deploy-container'
