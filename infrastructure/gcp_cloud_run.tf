@@ -46,8 +46,8 @@ resource "google_cloud_run_v2_service" "services" {
   }
 
   depends_on = [
-    google_project_service.services,
-    google_compute_router_nat.nat
+    google_project_service.services
+    # google_compute_router_nat.nat
 ]
 }
 
