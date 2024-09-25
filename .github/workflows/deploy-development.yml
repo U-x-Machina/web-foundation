@@ -42,7 +42,8 @@ jobs:
       - name: 'Set services matrix'
         id: services
         shell: bash
-        echo "matrix=$(echo ${{ vars.GCP_SERVICES }} | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
+        run: |-
+          echo "matrix=$(echo ${{ vars.GCP_SERVICES }} | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
