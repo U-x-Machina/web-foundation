@@ -38,7 +38,7 @@ resource "google_cloud_run_v2_service" "services" {
     vpc_access {
       network_interfaces {
         network = google_compute_network.nat.id
-        subnetwork = google_compute_subnetwork.nat.id
+        subnetwork = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].id
       }
       egress    = "ALL_TRAFFIC"
     }

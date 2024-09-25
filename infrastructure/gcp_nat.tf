@@ -5,41 +5,45 @@ resource "google_compute_network" "nat" {
 }
 
 resource "google_compute_subnetwork" "nat" {
+  for_each      = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider      = google-beta
   project       = google_project.project.project_id
-  name          = "static-ip"
-  ip_cidr_range = "10.124.0.0/28"
+  name          = "static-egress-ip-${each.value.service.name}-${each.value.region}"
+  ip_cidr_range = "10.85.120.77/28"
   network       = google_compute_network.nat.id
 }
 
 resource "google_compute_router" "nat" {
+  for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-ip-router"
   network  = google_compute_network.nat.name
-  region   = google_compute_subnetwork.nat.region
+  region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 }
 
 resource "google_compute_address" "nat" {
+  for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-ip-addr"
-  region   = google_compute_subnetwork.nat.region
+  region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 }
 
 resource "google_compute_router_nat" "nat" {
+  for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-nat"
-  router   = google_compute_router.nat.name
-  region   = google_compute_subnetwork.nat.region
+  router   = google_compute_router.nat["${each.value.service.name}.${each.value.region}"].name
+  region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 
   nat_ip_allocate_option = "MANUAL_ONLY"
-  nat_ips                = [google_compute_address.nat.self_link]
+  nat_ips                = [google_compute_address.nat["${each.value.service.name}.${each.value.region}"].self_link]
 
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
   subnetwork {
-    name                    = google_compute_subnetwork.nat.id
+    name                    = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].id
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 }
