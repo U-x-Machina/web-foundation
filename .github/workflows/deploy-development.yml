@@ -12,7 +12,7 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     outputs:
-      services-matrix: ${{ steps.services.outputs.matrix }}
+      regions-matrix: ${{ steps.regions.outputs.matrix }}
       image: ${{ steps.build.outputs.image }}
 
     steps:
@@ -39,11 +39,11 @@ jobs:
           mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
           mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
 
-      - name: 'Set services matrix'
-        id: services
+      - name: 'Set regions matrix'
+        id: regions
         shell: bash
         run: |-
-          echo "matrix=$(echo '${{ vars.GCP_SERVICES }}' | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo '${{ vars.GCP_REGIONS }}' | jq '{region: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
@@ -53,7 +53,7 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.services-matrix) }}
+      matrix: ${{ fromJson(needs.build.outputs.regions-matrix) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -66,4 +66,5 @@ jobs:
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           image: ${{ needs.build.outputs.image }}
-          service: ${{ matrix.service }}
+          service: ${{ vars.GCP_SERVICE }}
+          region: ${{ matrix.region }}

@@ -18,11 +18,14 @@ inputs:
   gcp-workload-identity-provider:
     description: 'Google Cloud Platform Workload Identity Provider name'
     required: true
-  image:
-    description: 'Docker Container image URL to deploy'
-    required: true
   service:
     description: 'Google Cloud Run service to deploy the image to'
+    required: true
+  region:
+    description: 'Google Cloud Run region within which to reploy the image'
+    required: true
+  image:
+    description: 'Docker Container image URL to deploy'
     required: true
 
 runs:
@@ -38,9 +41,11 @@ runs:
         workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
         service_account: '${{ inputs.gcp-service-account }}'
 
+
     - name: Deploy to Cloud Run
       id: deploy
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: ${{ inputs.service }}
+        service: "${{ inputs.service }}-${{ inputs.region }}"
+        region: ${{ inputs.region }}
         image: ${{ inputs.image }}
