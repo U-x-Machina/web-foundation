@@ -117,6 +117,21 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   depends_on  = [google_tags_location_tag_binding.binding]
 }
 
+# Add required permissions to default Compute Service Account for future deployments
+resource "google_service_account_iam_binding" "default_compute" {
+  service_account_id = "${google_project.project.number}-compute@developer.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+
+  members = [
+    "serviceAccount:${var.github_actions_deployer_service_account}",
+  ]
+
+  depends_on = [
+    google_project_service.services,
+    google_cloud_run_v2_service.services
+  ]
+}
+
 # Load balancing
 resource "google_compute_global_address" "lb_default" {
   project       = google_project.project.project_id

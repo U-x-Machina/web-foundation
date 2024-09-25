@@ -147,3 +147,8 @@ variable "github_repo" {
   description = "The name of the connected repository in slug format. If empty, Terraform workspace name will be used as an attempt."
   default     = ""
 }
+
+variable "github_actions_deployer_service_account" {
+  type        = string
+  description = "Email of the Google Cloud Platform Service Account used by Workload Identity Federation to deploy from Github Actions"
+}
