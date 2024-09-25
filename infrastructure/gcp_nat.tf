@@ -1,3 +1,7 @@
+locals {
+    subnet_indices = [for entry in local.gcr_services: "${entry.service.name}.${entry.region}"]
+}
+
 resource "google_compute_network" "nat" {
   provider = google-beta
   project  = google_project.project.project_id
@@ -9,7 +13,7 @@ resource "google_compute_subnetwork" "nat" {
   provider      = google-beta
   project       = google_project.project.project_id
   name          = "static-egress-ip-${each.value.service.name}-${each.value.region}"
-  ip_cidr_range = "10.85.${index(local.gcr_services, each.value.service)}.${index(each.value.service.regions, each.value.region)}/28"
+  ip_cidr_range = "10.85.${index(local.subnet_indices, "${entry.service.name}.${entry.region}")}.0/28"
   network       = google_compute_network.nat.id
 }
 
