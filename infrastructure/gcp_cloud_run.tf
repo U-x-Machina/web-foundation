@@ -35,16 +35,16 @@ resource "google_cloud_run_v2_service" "services" {
       min_instance_count = each.value.service.min_instances
       max_instance_count = each.value.service.max_instances
     }
-    vpc_access {
-      connector = google_vpc_access_connector.nat["${each.value.service.name}.${each.value.region}"].id
-      egress    = "ALL_TRAFFIC"
-    }
+    # vpc_access {
+    #   connector = google_vpc_access_connector.nat["${each.value.service.name}.${each.value.region}"].id
+    #   egress    = "ALL_TRAFFIC"
+    # }
     max_instance_request_concurrency = each.value.service.concurrency
   }
 
   depends_on = [
-    google_project_service.services,
-    google_compute_router_nat.nat
+    google_project_service.services
+    # google_compute_router_nat.nat
   ]
 }
 

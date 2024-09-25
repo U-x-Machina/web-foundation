@@ -1,12 +1,12 @@
-name: Deploy to development
+name: Deploy to test
 
 on:
   push:
-    branches: [develop]
+    branches: [release/*]
 
 jobs:
   build:
-    environment: development
+    environment: test
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -28,7 +28,7 @@ jobs:
         id: build
         uses: './.github/workflows/_build-container'
         with:
-          environment: 'development'
+          environment: 'test'
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
@@ -47,7 +47,7 @@ jobs:
 
   deploy:
     needs: build
-    environment: development
+    environment: test
     permissions:
       contents: 'read'
       id-token: 'write'
