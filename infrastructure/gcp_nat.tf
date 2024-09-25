@@ -18,6 +18,22 @@ resource "google_compute_subnetwork" "nat" {
   region        = each.value.region
 }
 
+resource "google_vpc_access_connector" "nat" {
+  for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
+  provider = google-beta
+  project  = google_project.project.project_id
+  name     = "vpc-connector-${each.value.service.name}-${each.value.region}"
+  region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
+
+  subnet {
+    name = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].name
+  }
+
+  depends_on = [
+    google_project_service.services
+  ]
+}
+
 resource "google_compute_router" "nat" {
   for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta

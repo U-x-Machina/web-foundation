@@ -36,10 +36,7 @@ resource "google_cloud_run_v2_service" "services" {
       max_instance_count = each.value.service.max_instances
     }
     vpc_access {
-      network_interfaces {
-        network = google_compute_network.nat.id
-        subnetwork = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].id
-      }
+      connector = google_vpc_access_connector.nat["${each.value.service.name}.${each.value.region}"].id
       egress    = "ALL_TRAFFIC"
     }
     max_instance_request_concurrency = each.value.service.concurrency
@@ -48,7 +45,7 @@ resource "google_cloud_run_v2_service" "services" {
   depends_on = [
     google_project_service.services,
     google_compute_router_nat.nat
-]
+  ]
 }
 
 # Assign the allUsersIngress tag to Cloud Run Services to enable public access

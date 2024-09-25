@@ -31,7 +31,8 @@ variable "google_project_services" {
   default = [
     "run.googleapis.com",
     "compute.googleapis.com",
-    "artifactregistry.googleapis.com"
+    "artifactregistry.googleapis.com",
+    "vpcaccess.googleapis.com"
   ]
 }
 
