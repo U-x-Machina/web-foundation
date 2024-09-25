@@ -22,7 +22,7 @@ resource "google_compute_router" "nat" {
   for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
-  name     = "static-ip-router"
+  name     = "static-ip-router-${each.value.service.name}-${each.value.region}"
   network  = google_compute_network.nat.name
   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 }
@@ -31,7 +31,7 @@ resource "google_compute_address" "nat" {
   for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
-  name     = "static-ip-addr"
+  name     = "static-ip-addr-${each.value.service.name}-${each.value.region}"
   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 }
 
@@ -39,7 +39,7 @@ resource "google_compute_router_nat" "nat" {
   for_each = { for entry in local.gcr_services: "${entry.service.name}.${entry.region}" => entry }
   provider = google-beta
   project  = google_project.project.project_id
-  name     = "static-nat"
+  name     = "static-nat-${each.value.service.name}-${each.value.region}"
   router   = google_compute_router.nat["${each.value.service.name}.${each.value.region}"].name
   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 
