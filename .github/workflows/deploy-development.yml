@@ -12,6 +12,7 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     outputs:
+      services-matrix: ${{ steps.services.outputs.matrix }}
       image: ${{ steps.build.outputs.image }}
 
     steps:
@@ -39,8 +40,9 @@ jobs:
           mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
 
       - name: 'Set services matrix'
+        id: services
         shell: bash
-        run: echo '${{ vars.GCP_SERVICES }}' | jq
+        echo "matrix=$(echo ${{ vars.GCP_SERVICES }} | jq '{service: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
@@ -51,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ${{ fromJSON(vars.GCP_SERVICES) }}
+        service: ${{ needs.build.outputs.services-matrix }}
 
     steps:
       - name: 'Deploy Docker Container to Google Cloud Run'
