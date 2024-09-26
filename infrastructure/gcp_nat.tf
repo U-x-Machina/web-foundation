@@ -1,5 +1,10 @@
 locals {
-    subnet_indices = [for entry in local.gcr_services: "${entry.service.name}.${entry.region}"]
+  subnet_indices = [for entry in local.gcr_services: "${entry.service.name}.${entry.region}"]
+  used_regions = distinct(flatten([
+    for env in var.environments : [
+      for region in env.regions : region
+    ]
+  ]))
 }
 
 resource "google_compute_network" "nat" {
@@ -10,15 +15,13 @@ resource "google_compute_network" "nat" {
 }
 
 resource "google_compute_subnetwork" "nat" {
-  count         = var.gcp_use_nat_for_mongodb_atlas ? 1 : 0
-#   for_each      = { for entry in (var.gcp_use_nat_for_mongodb_atlas ? local.gcr_services : []): "${entry.service.name}.${entry.region}" => entry }
+  for_each      = local.used_regions
   provider      = google-beta
   project       = google_project.project.project_id
-  name          = "static-egress-ip"
-#   name          = "static-egress-ip-${each.value.service.name}-${each.value.region}"
+  name          = "static-egress-ip-${each.value}"
   ip_cidr_range = "10.8.0.0/24"
   network       = google_compute_network.nat[0].id
-#   region        = each.value.region
+  region        = each.value
 }
 
 # resource "google_compute_router" "nat" {

@@ -41,7 +41,7 @@ resource "google_cloud_run_v2_service" "services" {
       content {
         network_interfaces {
           network    = google_compute_network.nat[0].id
-          subnetwork = google_compute_subnetwork.nat[0].id
+          subnetwork = google_compute_subnetwork.nat[each.value.region].id
         }
       }
     }
