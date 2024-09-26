@@ -12,6 +12,7 @@ resource "google_compute_network" "nat" {
   provider = google-beta
   project  = google_project.project.project_id
   name     = "vpc-egress-network"
+  depends_on = [google_project_service.services]
 }
 
 resource "google_compute_subnetwork" "nat" {

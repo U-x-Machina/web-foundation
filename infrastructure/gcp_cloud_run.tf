@@ -48,10 +48,7 @@ resource "google_cloud_run_v2_service" "services" {
     max_instance_request_concurrency = each.value.service.concurrency
   }
 
-  depends_on = [
-    google_project_service.services
-    # google_compute_router_nat.nat
-  ]
+  depends_on = [google_project_service.services]
 }
 
 # Assign the allUsersIngress tag to Cloud Run Services to enable public access
@@ -105,4 +102,5 @@ resource "google_artifact_registry_repository" "builds_repository" {
   repository_id = var.gar_repository
   description   = "Builds repository"
   format        = "DOCKER"
+  depends_on = [google_project_service.services]
 }

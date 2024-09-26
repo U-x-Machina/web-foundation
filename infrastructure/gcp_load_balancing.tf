@@ -103,6 +103,8 @@ resource "google_compute_managed_ssl_certificate" "lb_default" {
   managed {
     domains = local.ssl_domains
   }
+
+  depends_on = [google_project_service.services]
 }
 
 resource "google_compute_target_https_proxy" "lb_default" {
