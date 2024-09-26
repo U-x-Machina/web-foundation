@@ -39,8 +39,10 @@ resource "google_cloud_run_v2_service" "services" {
       for_each = var.gcp_use_nat_for_mongodb_atlas ? [1] : []
 
       content {
-        connector = google_vpc_access_connector.nat["${each.value.service.name}.${each.value.region}"].id
-        egress    = "ALL_TRAFFIC"
+        network_interfaces {
+          network    = google_compute_network.nat[0].id
+          subnetwork = google_compute_subnetwork.nat[0].id
+        }
       }
     }
     max_instance_request_concurrency = each.value.service.concurrency
