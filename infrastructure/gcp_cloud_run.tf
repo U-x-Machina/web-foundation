@@ -72,7 +72,7 @@ data "google_iam_policy" "noauth" {
 resource "time_sleep" "gcr_iam_delay" {
   depends_on = [
     google_tags_location_tag_binding.binding,
-    google_iam_policy.noauth
+    google_cloud_run_v2_service.services
   ]
 
   create_duration = "30s"
