@@ -11,14 +11,14 @@ resource "google_compute_network" "nat" {
   count    = var.gcp_use_nat_for_mongodb_atlas ? 1 : 0
   provider = google-beta
   project  = google_project.project.project_id
-  name     = "static-ip-network"
+  name     = "vpc-egress-network"
 }
 
 resource "google_compute_subnetwork" "nat" {
   for_each      = { for region in local.used_regions: "${region}" => region }
   provider      = google-beta
   project       = google_project.project.project_id
-  name          = "static-egress-ip-${each.value}"
+  name          = "vpc-egress-subnet-${each.value}"
   ip_cidr_range = "10.85.${index(local.used_regions, each.value) + 1}.0/24"
   network       = google_compute_network.nat[0].id
   region        = each.value
