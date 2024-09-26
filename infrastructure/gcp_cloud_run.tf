@@ -80,6 +80,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
 # Add required permissions to default Compute Service Account for future deployments
 data "google_service_account" "default_compute" {
   account_id = "${google_project.project.number}-compute@developer.gserviceaccount.com"
+  depends_on = [google_cloud_run_v2_service.services]
 }
 
 resource "google_service_account_iam_binding" "default_compute" {

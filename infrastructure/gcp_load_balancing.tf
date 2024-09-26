@@ -36,6 +36,8 @@ resource "google_compute_region_network_endpoint_group" "lb_default" {
   cloud_run {
     service = "${each.value.service.name}-${each.value.region}"
   }
+
+  depends_on            = [google_project_service.services]
 }
 
 resource "google_compute_backend_service" "lb_default" {
