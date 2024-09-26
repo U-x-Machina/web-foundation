@@ -40,7 +40,7 @@ resource "google_compute_router" "nat" {
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-ip-router-${each.value.service.name}-${each.value.region}"
-  network  = google_compute_network.nat.name
+  network  = google_compute_network.nat[0].name
   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
 }
 
