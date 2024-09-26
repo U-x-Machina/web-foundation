@@ -65,15 +65,27 @@ data "google_iam_policy" "noauth" {
     role = "roles/run.invoker"
     members = ["allUsers"]
   }
+  depends_on = [google_cloud_run_v2_service.services]
 }
 
+# Create a delay before applying the IAM policy, otherwise it will fail
+resource "time_sleep" "gcr_iam_delay" {
+  depends_on = [
+    google_tags_location_tag_binding.binding,
+    google_iam_policy.noauth
+  ]
+
+  create_duration = "30s"
+}
+
+# Apply the IAM policy, at a delay
 resource "google_cloud_run_service_iam_policy" "noauth" {
   for_each    = google_cloud_run_v2_service.services
   location    = each.value.location
   project     = each.value.project
   service     = each.value.name
   policy_data = data.google_iam_policy.noauth.policy_data
-  depends_on  = [google_tags_location_tag_binding.binding]
+  depends_on  = [time_sleep.gcr_iam_delay]
 }
 
 # Add required permissions to default Compute Service Account for future deployments
