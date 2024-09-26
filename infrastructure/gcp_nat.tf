@@ -15,7 +15,7 @@ resource "google_compute_network" "nat" {
 }
 
 resource "google_compute_subnetwork" "nat" {
-  for_each      = local.used_regions
+  for_each      = { for region in local.used_regions: "${region}" => region }
   provider      = google-beta
   project       = google_project.project.project_id
   name          = "static-egress-ip-${each.value}"
