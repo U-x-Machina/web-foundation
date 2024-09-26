@@ -54,3 +54,11 @@ resource "mongodbatlas_project_api_key" "project_key" {
     role_names = ["GROUP_OWNER"]
   }
 }
+
+# If not using NAT, whitelist all IP addresses to be able to connect
+resource "mongodbatlas_project_ip_access_list" "all_access" {
+  count      = var.gcp_use_nat_for_mongodb_atlas ? 0 : 1
+  project_id = mongodbatlas_project.project.id
+  cidr_block = "0.0.0.0/0"
+  comment    = "Allow public access due to GCP NAT not being used"
+}

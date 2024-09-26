@@ -138,6 +138,12 @@ variable "mongodb_atlas_gcp_serverless_region" {
   description = "MongoDB Atlas Serverless Instance region name for the GCP provider"
 }
 
+variable "gcp_use_nat_for_mongodb_atlas" {
+  type        = bool
+  description = "Whether to use NAT and IP whitelisting for MongoDB Atlas. If false, all IPs (0.0.0.0) will be allowed (not recommended for production)."
+  default     = true
+}
+
 variable "github_org" {
   type        = string
   description = "Your GitHub organisation or user owning the connected repository in slug format"
