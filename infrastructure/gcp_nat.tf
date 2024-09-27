@@ -31,6 +31,7 @@ resource "google_vpc_access_connector" "nat" {
   project  = google_project.project.project_id
   name     = "cxn-${each.value}"
   region   = each.value
+  min_instances = 2
   max_instances = 10
 
   subnet {
