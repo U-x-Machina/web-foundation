@@ -40,6 +40,10 @@ resource "google_compute_address" "nat" {
   project  = google_project.project.project_id
   name     = "static-ip-addr-${each.value}"
   region   = google_compute_subnetwork.nat[each.value].region
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "google_compute_router_nat" "nat" {
@@ -58,4 +62,5 @@ resource "google_compute_router_nat" "nat" {
     name                    = google_compute_subnetwork.nat[each.value].id
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
+  enable_dynamic_port_allocation = true
 }
