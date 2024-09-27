@@ -20,7 +20,7 @@ resource "google_compute_subnetwork" "nat" {
   provider      = google-beta
   project       = google_project.project.project_id
   name          = "vpc-egress-subnetwork-${each.value}"
-  ip_cidr_range = "10.85.${index(local.used_regions, each.value) + 1}.0/16"
+  ip_cidr_range = "10.${index(local.used_regions, each.value) + 80}.0.0/16"
   network       = google_compute_network.nat[0].id
   region        = each.value
 }
