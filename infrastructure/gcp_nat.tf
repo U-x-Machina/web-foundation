@@ -25,14 +25,13 @@ resource "google_compute_subnetwork" "nat" {
   region        = each.value
 }
 
-# resource "google_compute_router" "nat" {
-#   for_each = { for entry in (var.gcp_use_nat_for_mongodb_atlas ? local.gcr_services : []): "${entry.service.name}.${entry.region}" => entry }
-#   provider = google-beta
-#   project  = google_project.project.project_id
-#   name     = "static-ip-router-${each.value.service.name}-${each.value.region}"
-#   network  = google_compute_network.nat[0].name
-#   region   = google_compute_subnetwork.nat["${each.value.service.name}.${each.value.region}"].region
-# }
+resource "google_compute_router" "default" {
+  for_each = { for region in local.used_regions: "${region}" => region }
+  provider = google-beta
+  name     = "static-ip-router-${each.value}"
+  network  = google_compute_network.nat[0].name
+  region   = google_compute_subnetwork.nat[each.value].region
+}
 
 # resource "google_compute_address" "nat" {
 #   for_each = { for entry in (var.gcp_use_nat_for_mongodb_atlas ? local.gcr_services : []): "${entry.service.name}.${entry.region}" => entry }
