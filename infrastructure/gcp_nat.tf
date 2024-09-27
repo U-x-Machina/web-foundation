@@ -19,27 +19,27 @@ resource "google_compute_subnetwork" "nat" {
   for_each      = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider      = google-beta
   project       = google_project.project.project_id
-  name          = "vpc-egress-subnetwork-3-${each.value}"
-  ip_cidr_range = "10.${index(local.used_regions, each.value) + 20}.0.0/28"
+  name          = "vpc-egress-subnetwork-${each.value}"
+  ip_cidr_range = "10.${index(local.used_regions, each.value) + 20}.0.0/16"
   network       = google_compute_network.nat[0].id
   region        = each.value
 }
 
-resource "google_vpc_access_connector" "nat" {
-  for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
-  provider = google-beta
-  project  = google_project.project.project_id
-  name     = "cyn-${each.value}"
-  region   = each.value
-  min_instances = 2
-  max_instances = 10
+# resource "google_vpc_access_connector" "nat" {
+#   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
+#   provider = google-beta
+#   project  = google_project.project.project_id
+#   name     = "cyn-${each.value}"
+#   region   = each.value
+#   min_instances = 2
+#   max_instances = 10
 
-  subnet {
-    name = google_compute_subnetwork.nat[each.value].name
-  }
+#   subnet {
+#     name = google_compute_subnetwork.nat[each.value].name
+#   }
 
-  depends_on = [google_project_service.services]
-}
+#   depends_on = [google_project_service.services]
+# }
 
 resource "google_compute_router" "nat" {
   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
