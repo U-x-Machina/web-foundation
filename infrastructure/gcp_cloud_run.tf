@@ -34,6 +34,9 @@ resource "google_cloud_run_v2_service" "services" {
         initial_delay_seconds = 3
         timeout_seconds = 10
         period_seconds = 20
+        http_get {
+          path = "/"
+        }
       }
     }
     scaling {
