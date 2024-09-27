@@ -25,6 +25,20 @@ resource "google_compute_subnetwork" "nat" {
   region        = each.value
 }
 
+resource "google_vpc_access_connector" "nat" {
+  for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
+  provider = google-beta
+  project       = google_project.project.project_id
+  name     = "vpc-access-connector-${each.value}"
+  region   = each.value
+
+  subnet {
+    name = google_compute_subnetwork.nat[each.value].name
+  }
+
+  depends_on = [google_project_service.services]
+}
+
 resource "google_compute_router" "nat" {
   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta
@@ -55,7 +69,7 @@ resource "google_compute_router_nat" "nat" {
   region   = google_compute_subnetwork.nat[each.value].region
   
   enable_dynamic_port_allocation     = false
-  min_ports_per_vm                   = 256
+  # min_ports_per_vm                   = 256
   nat_ip_allocate_option             = "MANUAL_ONLY"
   nat_ips                            = [google_compute_address.nat[each.value].self_link]
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
@@ -65,8 +79,8 @@ resource "google_compute_router_nat" "nat" {
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 
-  log_config {
-    enable = true
-    filter = "ERRORS_ONLY"
-  }
+  # log_config {
+  #   enable = true
+  #   filter = "ERRORS_ONLY"
+  # }
 }
