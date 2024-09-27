@@ -16,5 +16,4 @@ FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/.next /app/.next
 EXPOSE 8080
-RUN export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 CMD [ "pnpm", "start" ]
