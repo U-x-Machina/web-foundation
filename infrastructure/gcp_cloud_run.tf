@@ -43,6 +43,7 @@ resource "google_cloud_run_v2_service" "services" {
           network    = google_compute_network.nat[0].id
           subnetwork = google_compute_subnetwork.nat[each.value.region].id
         }
+        egress       = "ALL_TRAFFIC"
       }
     }
     max_instance_request_concurrency = each.value.service.concurrency
