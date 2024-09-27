@@ -31,10 +31,10 @@ resource "google_cloud_run_v2_service" "services" {
         startup_cpu_boost = each.value.service.cpu_boost
       }
       startup_probe {
-        initial_delay_seconds = 10
+        initial_delay_seconds = 30
         timeout_seconds = 240
         period_seconds = 240
-        failure_threshold = 1
+        failure_threshold = 3
         tcp_socket {
           port = 8080
         }
