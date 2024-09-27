@@ -31,9 +31,15 @@ resource "google_cloud_run_v2_service" "services" {
         startup_cpu_boost = each.value.service.cpu_boost
       }
       startup_probe {
-        initial_delay_seconds = 3
-        timeout_seconds = 10
-        period_seconds = 20
+        initial_delay_seconds = 10
+        timeout_seconds = 240
+        period_seconds = 240
+        failure_threshold = 1
+        tcp_socket {
+          port = 8080
+        }
+      }
+      liveness_probe {
         http_get {
           path = "/"
         }
