@@ -53,11 +53,11 @@ resource "google_compute_router_nat" "nat" {
   name     = "static-nat-${each.value}"
   router   = google_compute_router.nat[each.value].name
   region   = google_compute_subnetwork.nat[each.value].region
-
+  
   enable_dynamic_port_allocation     = false
-  # nat_ip_allocate_option             = "MANUAL_ONLY"
-  # nat_ips                            = [google_compute_address.nat[each.value].self_link]
-  nat_ip_allocate_option             = "AUTO_ONLY"
+  min_ports_per_vm                   = 256
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  nat_ips                            = [google_compute_address.nat[each.value].self_link]
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
   
   subnetwork {
