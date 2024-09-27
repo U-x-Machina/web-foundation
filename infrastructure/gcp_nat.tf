@@ -53,14 +53,19 @@ resource "google_compute_router_nat" "nat" {
   name     = "static-nat-${each.value}"
   router   = google_compute_router.nat[each.value].name
   region   = google_compute_subnetwork.nat[each.value].region
-
-  nat_ip_allocate_option = "MANUAL_ONLY"
-  nat_ips                = [google_compute_address.nat[each.value].self_link]
-
+  enable_dynamic_port_allocation = true
+  # nat_ip_allocate_option = "MANUAL_ONLY"
+  # nat_ips                = [google_compute_address.nat[each.value].self_link]
+  nat_ip_allocate_option    = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+  
   subnetwork {
     name                    = google_compute_subnetwork.nat[each.value].id
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
-  enable_dynamic_port_allocation = true
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
 }
