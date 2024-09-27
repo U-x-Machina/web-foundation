@@ -56,7 +56,7 @@ resource "mongodbatlas_project_api_key" "project_key" {
 }
 
 # If using NAT, whitelist the reserved IP addresses
-resource "mongodbatlas_project_ip_access_list" "all_access" {
+resource "mongodbatlas_project_ip_access_list" "nat" {
   for_each   = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   project_id = mongodbatlas_project.project.id
   cidr_block = google_compute_address.nat[each.value].address
