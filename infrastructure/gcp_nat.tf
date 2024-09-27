@@ -28,8 +28,8 @@ resource "google_compute_subnetwork" "nat" {
 resource "google_vpc_access_connector" "nat" {
   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta
-  project       = google_project.project.project_id
-  name     = "cnn-${each.value}"
+  project  = google_project.project.project_id
+  name     = "cxn-${each.value}"
   region   = each.value
 
   subnet {
