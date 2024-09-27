@@ -16,7 +16,7 @@ resource "google_compute_network" "nat" {
 }
 
 resource "google_compute_subnetwork" "nat" {
-  for_each      = { for region in local.used_regions: "${region}" => region }
+  for_each      = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider      = google-beta
   project       = google_project.project.project_id
   name          = "vpc-egress-subnet-${each.value}"
@@ -26,7 +26,7 @@ resource "google_compute_subnetwork" "nat" {
 }
 
 resource "google_compute_router" "nat" {
-  for_each = { for region in local.used_regions: "${region}" => region }
+  for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-ip-router-${each.value}"
@@ -35,7 +35,7 @@ resource "google_compute_router" "nat" {
 }
 
 resource "google_compute_address" "nat" {
-  for_each = { for region in local.used_regions: "${region}" => region }
+  for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-ip-addr-${each.value}"
@@ -43,7 +43,7 @@ resource "google_compute_address" "nat" {
 }
 
 resource "google_compute_router_nat" "nat" {
-  for_each = { for region in local.used_regions: "${region}" => region }
+  for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta
   project  = google_project.project.project_id
   name     = "static-nat-${each.value}"
