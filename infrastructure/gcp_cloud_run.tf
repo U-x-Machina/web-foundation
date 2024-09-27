@@ -77,7 +77,7 @@ resource "time_sleep" "gcr_iam_delay" {
     google_cloud_run_v2_service.services
   ]
 
-  create_duration = "30s"
+  create_duration = "120s"
 }
 
 # Apply the IAM policy, at a delay
