@@ -30,6 +30,11 @@ resource "google_cloud_run_v2_service" "services" {
         cpu_idle          = each.value.service.cpu_idle
         startup_cpu_boost = each.value.service.cpu_boost
       }
+      startup_probe {
+        initial_delay_seconds = 3
+        timeout_seconds = 10
+        period_seconds = 20
+      }
     }
     scaling {
       min_instance_count = each.value.service.min_instances
