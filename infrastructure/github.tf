@@ -34,7 +34,7 @@ resource "github_repository_environment" "deployment" {
 resource "github_repository_environment_deployment_policy" "development" {
   repository        = data.github_repository.repo.name
   environment       = github_repository_environment.deployment["development"].environment
-  branch_pattern    = "development"
+  branch_pattern    = "develop"
 }
 
 resource "github_repository_environment_deployment_policy" "test" {
@@ -46,13 +46,13 @@ resource "github_repository_environment_deployment_policy" "test" {
 resource "github_repository_environment_deployment_policy" "staging" {
   repository        = data.github_repository.repo.name
   environment       = github_repository_environment.deployment["staging"].environment
-  branch_pattern    = "master"
+  branch_pattern    = "main"
 }
 
 resource "github_repository_environment_deployment_policy" "production" {
   repository        = data.github_repository.repo.name
   environment       = github_repository_environment.deployment["production"].environment
-  branch_pattern    = "master"
+  branch_pattern    = "main"
 }
 
 locals {
