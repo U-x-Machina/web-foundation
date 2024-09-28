@@ -87,23 +87,18 @@ runs:
     - name: Setup MongoDB Atlas CLI
       uses: mongodb/atlas-github-action@v0.2.0
 
-    - name: Add Github Actions runner IP to MongoDB Atlas Access List
-      shell: bash
-      run: |
-        atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
-
     - name: Build the Container
       id: build
       shell: bash
       run: |-
+        function cleanup() {                                                
+          atlas accessLists delete ${{ steps.get_gh_runner_ip.outputs.ip_address }} --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --force
+        }                                                                       
+        trap cleanup EXIT
+        atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
         IMAGE="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
         docker build -t ${IMAGE} ./
         echo "image=${IMAGE}" >> $GITHUB_OUTPUT
-
-    - name: Remove Github Actions runner IP from MongDB Atlas Access List
-      shell: bash
-      run: |
-        atlas accessLists delete ${{ steps.get_gh_runner_ip.outputs.ip_address }} --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --force
 
     - name: Push the Container
       shell: bash
