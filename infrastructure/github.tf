@@ -36,7 +36,6 @@ locals {
     for env in var.environments : [
       for type in ["build-", ""] : {
         env         = env
-        type        = type
         environment = type == "build-" ? github_repository_environment.build[env.name].environment : github_repository_environment.deployment[env.name].environment
       }
     ]
@@ -98,7 +97,7 @@ resource "github_actions_secret" "mongodb_atlas_private_api_key" {
 # Environment variables
 ###
 resource "github_actions_environment_variable" "gcp_service" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "GCP_SERVICE"
@@ -106,7 +105,7 @@ resource "github_actions_environment_variable" "gcp_service" {
 }
 
 resource "github_actions_environment_variable" "gcp_regions" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "GCP_REGIONS"
@@ -114,7 +113,7 @@ resource "github_actions_environment_variable" "gcp_regions" {
 }
 
 resource "github_actions_environment_variable" "payload_public_server_url" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "PAYLOAD_PUBLIC_SERVER_URL"
@@ -122,7 +121,7 @@ resource "github_actions_environment_variable" "payload_public_server_url" {
 }
 
 resource "github_actions_environment_variable" "next_public_server_url" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "NEXT_PUBLIC_SERVER_URL"
@@ -130,7 +129,7 @@ resource "github_actions_environment_variable" "next_public_server_url" {
 }
 
 resource "github_actions_environment_variable" "next_public_is_live" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "NEXT_PUBLIC_IS_LIVE"
@@ -138,7 +137,7 @@ resource "github_actions_environment_variable" "next_public_is_live" {
 }
 
 resource "github_actions_environment_variable" "payload_public_draft_secret" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "PAYLOAD_PUBLIC_DRAFT_SECRET"
@@ -146,7 +145,7 @@ resource "github_actions_environment_variable" "payload_public_draft_secret" {
 }
 
 resource "github_actions_environment_variable" "next_private_draft_secret" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "NEXT_PRIVATE_DRAFT_SECRET"
@@ -154,7 +153,7 @@ resource "github_actions_environment_variable" "next_private_draft_secret" {
 }
 
 resource "github_actions_environment_variable" "revalidation_key" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "REVALIDATION_KEY"
@@ -162,7 +161,7 @@ resource "github_actions_environment_variable" "revalidation_key" {
 }
 
 resource "github_actions_environment_variable" "next_private_revalidation_key" {
-  for_each      = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "NEXT_PRIVATE_REVALIDATION_KEY"
@@ -173,7 +172,7 @@ resource "github_actions_environment_variable" "next_private_revalidation_key" {
 # Environment secrets
 ###
 resource "github_actions_environment_secret" "database_uri" {
-  for_each          = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each          = { for entry in local.envs: "${entry.environment}" => entry }
   repository        = data.github_repository.repo.name
   environment       = each.value.environment
   secret_name       = "DATABASE_URI"
@@ -181,7 +180,7 @@ resource "github_actions_environment_secret" "database_uri" {
 }
 
 resource "github_actions_environment_secret" "payload_secret" {
-  for_each          = { for entry in local.envs: "${entry.env}.${entry.type}" => entry }
+  for_each          = { for entry in local.envs: "${entry.environment}" => entry }
   repository        = data.github_repository.repo.name
   environment       = each.value.environment
   secret_name       = "PAYLOAD_SECRET"
