@@ -10,13 +10,13 @@ data "github_repository" "repo" {
 resource "github_repository_environment" "build" {
   for_each    = var.environments
   environment = "build-${each.value.name}"
-  repository  = github_repository.repo.name
+  repository  = data.github_repository.repo.name
 }
 
 resource "github_repository_environment" "env" {
   for_each    = var.environments
   environment = each.value.name
-  repository  = github_repository.repo.name
+  repository  = data.github_repository.repo.name
 }
 
 # Generate Payload secrets for each env
