@@ -25,22 +25,6 @@ resource "google_compute_subnetwork" "nat" {
   region        = each.value
 }
 
-# resource "google_vpc_access_connector" "nat" {
-#   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
-#   provider = google-beta
-#   project  = google_project.project.project_id
-#   name     = "cyn-${each.value}"
-#   region   = each.value
-#   min_instances = 2
-#   max_instances = 10
-
-#   subnet {
-#     name = google_compute_subnetwork.nat[each.value].name
-#   }
-
-#   depends_on = [google_project_service.services]
-# }
-
 resource "google_compute_router" "nat" {
   for_each = { for region in (var.gcp_use_nat_for_mongodb_atlas ? local.used_regions : []): "${region}" => region }
   provider = google-beta

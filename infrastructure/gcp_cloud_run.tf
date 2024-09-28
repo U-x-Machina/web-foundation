@@ -43,7 +43,6 @@ resource "google_cloud_run_v2_service" "services" {
           network    = google_compute_network.nat[0].id
           subnetwork = google_compute_subnetwork.nat[each.value.region].id
         }
-        # connector = google_vpc_access_connector.nat[each.value.region].id
         egress       = "ALL_TRAFFIC"
       }
     }

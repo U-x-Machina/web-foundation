@@ -41,9 +41,8 @@ runs:
         workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
         service_account: '${{ inputs.gcp-service-account }}'
 
-
     - name: Deploy to Cloud Run
       id: deploy
       shell: bash
       run: |-
-        gcloud run deploy ${{ inputs.service }}-${{ inputs.region }} --region ${{ inputs.region }} --image ${{ inputs.image }} --vpc-egress all-traffic --network vpc-egress-network --subnet vpc-egress-subnetwork-europe-west1
+        gcloud run deploy ${{ inputs.service }}-${{ inputs.region }} --region=${{ inputs.region }} --image=${{ inputs.image }} --vpc-egress=all-traffic --network=projects/${{ inputs.gcp-project-id}}/global/networks/vpc-egress-network --subnet="projects/${{ inputs.gcp-project-id}}/regions/${{ inputs.region }}/subnetworks/vpc-egress-subnetwork-${{ inputs.region }}
