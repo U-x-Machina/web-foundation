@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    environment: development
+    environment: build-development
     permissions:
       contents: 'read'
       id-token: 'write'

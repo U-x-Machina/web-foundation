@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    environment: test
+    environment: build-test
     permissions:
       contents: 'read'
       id-token: 'write'
