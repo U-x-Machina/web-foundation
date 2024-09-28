@@ -47,8 +47,3 @@ runs:
       shell: bash
       run: |-
         gcloud run deploy ${{ inputs.service }}-${{ inputs.region }} --region ${{ inputs.region }} --image ${{ inputs.image }} --vpc-egress all-traffic --network vpc-egress-network --subnet vpc-egress-subnetwork-europe-west1
-      # uses: google-github-actions/deploy-cloudrun@v2
-      # with:
-      #   service: "${{ inputs.service }}-${{ inputs.region }}"
-      #   region: ${{ inputs.region }}
-      #   image: ${{ inputs.image }}
