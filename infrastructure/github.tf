@@ -31,6 +31,30 @@ resource "github_repository_environment" "deployment" {
   }
 }
 
+resource "github_repository_environment_deployment_policy" "development" {
+  repository        = github_repository.repo.name
+  environment       = github_repository_environment.deployment["development"].environment
+  branch_pattern    = "development"
+}
+
+resource "github_repository_environment_deployment_policy" "test" {
+  repository        = github_repository.repo.name
+  environment       = github_repository_environment.deployment["test"].environment
+  branch_pattern    = "release/*"
+}
+
+resource "github_repository_environment_deployment_policy" "staging" {
+  repository        = github_repository.repo.name
+  environment       = github_repository_environment.deployment["staging"].environment
+  branch_pattern    = "master"
+}
+
+resource "github_repository_environment_deployment_policy" "production" {
+  repository        = github_repository.repo.name
+  environment       = github_repository_environment.deployment["production"].environment
+  branch_pattern    = "master"
+}
+
 locals {
   envs = distinct(flatten([
     for env in var.environments : [
