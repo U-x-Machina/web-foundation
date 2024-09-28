@@ -73,7 +73,7 @@ resource "github_actions_secret" "mongodb_atlas_private_api_key" {
 ###
 # Environment variables
 ###
-resource "github_actions_environment_variable" "gcp_service" {
+resource "github_actions_environment_variable" "gcp_service_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -88,7 +88,7 @@ resource "github_actions_environment_variable" "gcp_service" {
   value         = each.value.name
 }
 
-resource "github_actions_environment_variable" "gcp_regions" {
+resource "github_actions_environment_variable" "gcp_regions_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -103,7 +103,7 @@ resource "github_actions_environment_variable" "gcp_regions" {
   value         = jsonencode(each.value.regions)
 }
 
-resource "github_actions_environment_variable" "payload_public_server_url" {
+resource "github_actions_environment_variable" "payload_public_server_url_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -118,7 +118,7 @@ resource "github_actions_environment_variable" "payload_public_server_url" {
   value         = each.key == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${terraform.workspace}.${var.domain_dev}"
 }
 
-resource "github_actions_environment_variable" "next_public_server_url" {
+resource "github_actions_environment_variable" "next_public_server_url_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -133,7 +133,7 @@ resource "github_actions_environment_variable" "next_public_server_url" {
   value         = each.key == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.subdomain == "" ? "" : "${each.value.subdomain}."}${terraform.workspace}.${var.domain_dev}"
 }
 
-resource "github_actions_environment_variable" "next_public_is_live" {
+resource "github_actions_environment_variable" "next_public_is_live_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -148,7 +148,7 @@ resource "github_actions_environment_variable" "next_public_is_live" {
   value         = each.key == "production" ? true : false
 }
 
-resource "github_actions_environment_variable" "payload_public_draft_secret" {
+resource "github_actions_environment_variable" "payload_public_draft_secret_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -163,7 +163,7 @@ resource "github_actions_environment_variable" "payload_public_draft_secret" {
   value         = random_password.draft_secret[each.key].result
 }
 
-resource "github_actions_environment_variable" "next_private_draft_secret" {
+resource "github_actions_environment_variable" "next_private_draft_secret_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -178,7 +178,7 @@ resource "github_actions_environment_variable" "next_private_draft_secret" {
   value         = random_password.draft_secret[each.key].result
 }
 
-resource "github_actions_environment_variable" "revalidation_key" {
+resource "github_actions_environment_variable" "revalidation_key_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -193,7 +193,7 @@ resource "github_actions_environment_variable" "revalidation_key" {
   value         = random_password.revalidation_key[each.key].result
 }
 
-resource "github_actions_environment_variable" "next_private_revalidation_key" {
+resource "github_actions_environment_variable" "next_private_revalidation_key_build" {
   for_each      = var.environments
   repository    = data.github_repository.repo.name
   environment   = "build-${each.value.name}"
@@ -211,7 +211,7 @@ resource "github_actions_environment_variable" "next_private_revalidation_key" {
 ###
 # Environment secrets
 ###
-resource "github_actions_environment_secret" "database_uri" {
+resource "github_actions_environment_secret" "database_uri_build" {
   for_each          = var.environments
   repository        = data.github_repository.repo.name
   environment       = "build-${each.value.name}"
@@ -226,7 +226,7 @@ resource "github_actions_environment_secret" "database_uri" {
   plaintext_value   = "mongodb+srv://${mongodbatlas_database_user.db_user[each.key].username}:${mongodbatlas_database_user.db_user[each.key].password}@${split("mongodb+srv://", mongodbatlas_serverless_instance.instances[each.key].connection_strings_standard_srv)[1]}"
 }
 
-resource "github_actions_environment_secret" "payload_secret" {
+resource "github_actions_environment_secret" "payload_secret_build" {
   for_each          = var.environments
   repository        = data.github_repository.repo.name
   environment       = "build-${each.value.name}"
