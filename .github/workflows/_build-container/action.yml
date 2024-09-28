@@ -1,0 +1,106 @@
+# This workflow builds and pushes a Docker container to Google Artifact Registry.
+#
+# Overview:
+#
+# 1. Authenticate to Google Cloud
+# 2. Authenticate Docker to Artifact Registry
+# 3. Whitelist Github Actions worker IP to MongoDB Atlas
+# 4. Build a docker container
+# 5. Remote the whitelisted IP from MongoDB Atlas
+# 6. Publish the Docker image to Google Artifact Registry
+
+name: 'Build and push Docker Container'
+description: 'Builds and pushes a Docker container to Google Artifact Registry'
+
+inputs:
+  environment:
+    description: 'Deployment environment'
+    required: true
+  gcp-project-id:
+    description: 'Google Cloud Platform Project ID'
+    required: true
+  gcp-service-account:
+    description: 'Google Cloud Platform Service Account used for deployments'
+    required: true
+  gcp-workload-identity-provider:
+    description: 'Google Cloud Platform Workload Identity Provider name'
+    required: true
+  gar-location:
+    description: 'Google Artifact Registry location'
+    required: true
+  gar-repository:
+    description: 'Google Artifact Registry repository name'
+    required: true
+  mongodb-atlas-public-api-key:
+    description: 'MongoDB Atlas public API key'
+    required: true
+  mongodb-atlas-private-api-key:
+    description: 'MongoDB Atlas private API key'
+    required: true
+  mongodb-atlas-org-id:
+    description: 'MongoDB Atlas organization ID'
+    required: true
+  mongodb-atlas-project-id:
+    description: 'MongoDB Atlas project ID'
+    required: true
+
+outputs:
+  image:
+    description: "Docker image URL"
+    value: ${{ steps.build.outputs.image }}
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: access_token
+        project_id: '${{ inputs.gcp-project-id }}'
+        workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
+        service_account: '${{ inputs.gcp-service-account }}'
+
+    - name: Docker Auth
+      id: docker-auth
+      uses: 'docker/login-action@v3'
+      with:
+        registry: ${{ inputs.gar-location }}-docker.pkg.dev
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
+
+    - name: Get the public IP of this runner
+      id: get_gh_runner_ip
+      shell: bash
+      run: |
+        echo "ip_address=$(curl https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+
+    - name: Set MongoDB Atlas CLI env vars
+      shell: bash
+      run: |-
+        echo "MONGODB_ATLAS_PUBLIC_API_KEY=${{ inputs.mongodb-atlas-public-api-key }}" >> $GITHUB_ENV
+        echo "MONGODB_ATLAS_PRIVATE_API_KEY=${{ inputs.mongodb-atlas-private-api-key }}" >> $GITHUB_ENV
+        echo "MONGODB_ATLAS_ORG_ID=${{ inputs.mongodb-atlas-org-id }}" >> $GITHUB_ENV
+        echo "MONGODB_ATLAS_PROJECT_ID=${{ inputs.mongodb-atlas-project-id }}" >> $GITHUB_ENV
+
+    - name: Setup MongoDB Atlas CLI
+      uses: mongodb/atlas-github-action@v0.2.0
+
+    - name: Build the Container
+      id: build
+      shell: bash
+      run: |-
+        function cleanup() {                                                
+          atlas accessLists delete ${{ steps.get_gh_runner_ip.outputs.ip_address }} --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --force
+        }                                                                       
+        trap cleanup EXIT
+        atlas accessLists create ${{ steps.get_gh_runner_ip.outputs.ip_address }} --type ipAddress --projectId ${{ env.MONGODB_ATLAS_PROJECT_ID }} --comment  "Temporary access for Github Actions"
+        IMAGE="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}:${{ github.sha }}"
+        docker build -t ${IMAGE} ./
+        echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+
+    - name: Push the Container
+      shell: bash
+      run: |-
+        docker push ${{ steps.build.outputs.image }}

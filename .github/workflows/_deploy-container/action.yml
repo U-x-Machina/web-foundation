@@ -1,0 +1,48 @@
+# This workflow deploys an existing Docker Container to multiple Google Cloud Run services (multi-region).
+#
+# Overview:
+#
+# 1. Authenticates to Google Cloud Platform using Identity Federation
+# 2. Deploys input image to given Google Cloud Run service
+
+name: 'Deploy Docker Container to Google Cloud Run'
+description: 'Deploys an existing Docker Container to multiple Google Cloud Run services'
+
+inputs:
+  gcp-project-id:
+    description: 'Google Cloud Platform Project ID'
+    required: true
+  gcp-service-account:
+    description: 'Google Cloud Platform Service Account used for deployments'
+    required: true
+  gcp-workload-identity-provider:
+    description: 'Google Cloud Platform Workload Identity Provider name'
+    required: true
+  service:
+    description: 'Google Cloud Run service to deploy the image to'
+    required: true
+  region:
+    description: 'Google Cloud Run region within which to reploy the image'
+    required: true
+  image:
+    description: 'Docker Container image URL to deploy'
+    required: true
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: access_token
+        project_id: '${{ inputs.gcp-project-id }}'
+        workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
+        service_account: '${{ inputs.gcp-service-account }}'
+
+    - name: Deploy to Cloud Run
+      id: deploy
+      shell: bash
+      run: |-
+        gcloud run deploy ${{ inputs.service }}-${{ inputs.region }} --region=${{ inputs.region }} --image=${{ inputs.image }}

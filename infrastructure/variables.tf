@@ -30,7 +30,9 @@ variable "google_project_services" {
   description = "Google Project Services to be enabled"
   default = [
     "run.googleapis.com",
-    "compute.googleapis.com"
+    "compute.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "vpcaccess.googleapis.com"
   ]
 }
 
@@ -53,7 +55,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 1,
-      "enable_cdn"    = false
+      "enable_cdn"    = false,
+      "reviewers"     = {
+                          "teams": [],
+                          "users": []
+                        }
     }
     "test" = {
       "name"          = "test",
@@ -66,7 +72,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 2,
-      "enable_cdn"    = false
+      "enable_cdn"    = false,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
     "staging" = {
       "name"          = "staging",
@@ -79,7 +89,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 3,
-      "enable_cdn"    = true
+      "enable_cdn"    = true,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
     "production" = {
       "name"          = "production",
@@ -92,15 +106,31 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 10,
-      "enable_cdn"    = true
+      "enable_cdn"    = true,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
   }
 }
 
+variable "gar_location" {
+  type        = string
+  description = "Google Artifact Registry location"
+  default     = "europe"
+}
+
+variable "gar_repository" {
+  type        = string
+  description = "Google Artifact Registry repository name"
+  default     = "builds"
+}
+
 variable "default_environment" {
-  type = string
+  type        = string
   description = "Default environment to be used for Compute URL Map in case no host / URL is matched"
-  default = "production"
+  default     = "production"
 }
 
 variable "domain_dev" {
@@ -122,4 +152,26 @@ variable "mongodb_atlas_org_id" {
 variable "mongodb_atlas_gcp_serverless_region" {
   type        = string
   description = "MongoDB Atlas Serverless Instance region name for the GCP provider"
+}
+
+variable "gcp_use_nat_for_mongodb_atlas" {
+  type        = bool
+  description = "Whether to use NAT and IP whitelisting for MongoDB Atlas. If false, all IPs (0.0.0.0) will be allowed (not recommended for production)."
+  default     = true
+}
+
+variable "github_org" {
+  type        = string
+  description = "Your GitHub organisation or user owning the connected repository in slug format"
+}
+
+variable "github_repo" {
+  type        = string
+  description = "The name of the connected repository in slug format. If empty, Terraform workspace name will be used as an attempt."
+  default     = ""
+}
+
+variable "github_actions_deployer_service_account" {
+  type        = string
+  description = "Email of the Google Cloud Platform Service Account used by Workload Identity Federation to deploy from Github Actions"
 }

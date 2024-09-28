@@ -10,6 +10,10 @@ terraform {
       source = "mongodb/mongodbatlas"
       version = "1.20.0"
     }
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
   }
   required_version = ">= 1.9"
 }

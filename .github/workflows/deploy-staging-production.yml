@@ -1,0 +1,136 @@
+name: Deploy to staging and production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Staging
+  build-staging:
+    environment: build-staging
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    outputs:
+      regions-matrix: ${{ steps.regions.outputs.matrix }}
+      image: ${{ steps.build-staging.outputs.image }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Write .env'
+        uses: './.github/workflows/_write-env'
+        with:
+          vars: ${{ toJson(vars) }}
+          secrets: ${{ toJson(secrets) }}
+
+      - name: 'Build and push Docker Container'
+        id: build-staging
+        uses: './.github/workflows/_build-container'
+        with:
+          environment: 'staging'
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          gar-location: ${{ vars.GAR_LOCATION }}
+          gar-repository: ${{ vars.GAR_REPOSITORY }}
+          mongodb-atlas-public-api-key: ${{ vars.MONGODB_ATLAS_PUBLIC_API_KEY }}
+          mongodb-atlas-private-api-key: ${{ secrets.MONGODB_ATLAS_PRIVATE_API_KEY }}
+          mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
+          mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
+
+      - name: 'Set regions matrix'
+        id: regions
+        shell: bash
+        run: |-
+          echo "matrix=$(echo '${{ vars.GCP_REGIONS }}' | jq '{region: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
+
+  deploy-staging:
+    needs: build-staging
+    environment: staging
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.build-staging.outputs.regions-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Deploy Docker Container to Google Cloud Run'
+        id: deploy
+        uses: './.github/workflows/_deploy-container'
+        with:
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          image: ${{ needs.build-staging.outputs.image }}
+          service: ${{ vars.GCP_SERVICE }}
+          region: ${{ matrix.region }}
+
+  # Production
+  build-production:
+    environment: build-production
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    outputs:
+      regions-matrix: ${{ steps.regions.outputs.matrix }}
+      image: ${{ steps.build-production.outputs.image }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Write .env'
+        uses: './.github/workflows/_write-env'
+        with:
+          vars: ${{ toJson(vars) }}
+          secrets: ${{ toJson(secrets) }}
+
+      - name: 'Build and push Docker Container'
+        id: build-production
+        uses: './.github/workflows/_build-container'
+        with:
+          environment: 'production'
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          gar-location: ${{ vars.GAR_LOCATION }}
+          gar-repository: ${{ vars.GAR_REPOSITORY }}
+          mongodb-atlas-public-api-key: ${{ vars.MONGODB_ATLAS_PUBLIC_API_KEY }}
+          mongodb-atlas-private-api-key: ${{ secrets.MONGODB_ATLAS_PRIVATE_API_KEY }}
+          mongodb-atlas-org-id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
+          mongodb-atlas-project-id: ${{ vars.MONGODB_ATLAS_PROJECT_ID }}
+
+      - name: 'Set regions matrix'
+        id: regions
+        shell: bash
+        run: |-
+          echo "matrix=$(echo '${{ vars.GCP_REGIONS }}' | jq '{region: .[]}' | jq -s -c '{include: .}')" >> $GITHUB_OUTPUT
+
+  deploy-production:
+    needs: [build-production, deploy-staging]
+    environment: production
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.build-production.outputs.regions-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Deploy Docker Container to Google Cloud Run'
+        id: deploy
+        uses: './.github/workflows/_deploy-container'
+        with:
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+          gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          image: ${{ needs.build-production.outputs.image }}
+          service: ${{ vars.GCP_SERVICE }}
+          region: ${{ matrix.region }}

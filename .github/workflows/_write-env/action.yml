@@ -1,0 +1,40 @@
+name: 'Write .env'
+description: 'Writes .env file for the project to access relevant variables'
+
+inputs:
+  vars:
+    description: 'vars as JSON'
+    required: true
+  secrets:
+    description: 'secrets as JSON'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' > .env
+
+    - shell: bash
+      run: echo 'PAYLOAD_SECRET="${{ fromJSON(inputs.secrets).PAYLOAD_SECRET }}"' >> .env
+
+    - shell: bash
+      run: echo 'PAYLOAD_PUBLIC_SERVER_URL="${{ fromJSON(inputs.vars).PAYLOAD_PUBLIC_SERVER_URL }}"' >> .env
+
+    - shell: bash
+      run: echo 'NEXT_PUBLIC_SERVER_URL="${{ fromJSON(inputs.vars).NEXT_PUBLIC_SERVER_URL }}"' >> .env
+
+    - shell: bash
+      run: echo 'NEXT_PUBLIC_IS_LIVE="${{ fromJSON(inputs.vars).NEXT_PUBLIC_IS_LIVE }}"' >> .env
+
+    - shell: bash
+      run: echo 'PAYLOAD_PUBLIC_DRAFT_SECRET="${{ fromJSON(inputs.vars).PAYLOAD_PUBLIC_DRAFT_SECRET }}"' >> .env
+
+    - shell: bash
+      run: echo 'NEXT_PRIVATE_DRAFT_SECRET="${{ fromJSON(inputs.vars).NEXT_PRIVATE_DRAFT_SECRET }}"' >> .env
+
+    - shell: bash
+      run: echo 'REVALIDATION_KEY="${{ fromJSON(inputs.vars).REVALIDATION_KEY }}"' >> .env
+
+    - shell: bash
+      run: echo 'NEXT_PRIVATE_REVALIDATION_KEY="${{ fromJSON(inputs.vars).NEXT_PRIVATE_REVALIDATION_KEY }}"' >> .env
