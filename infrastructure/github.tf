@@ -37,7 +37,7 @@ locals {
       for type in ["build-", ""] : {
         env         = env
         type        = type
-        environment = type == "build-" ? github_repository_environment.build.environment : github_repository_environment.deployment.environment
+        environment = type == "build-" ? github_repository_environment.build[env.name].environment : github_repository_environment.deployment[env.name].environment
       }
     ]
   ]))
