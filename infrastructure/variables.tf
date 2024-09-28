@@ -55,7 +55,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 1,
-      "enable_cdn"    = false
+      "enable_cdn"    = false,
+      "reviewers"     = {
+                          "teams": [],
+                          "users": []
+                        }
     }
     "test" = {
       "name"          = "test",
@@ -68,7 +72,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 2,
-      "enable_cdn"    = false
+      "enable_cdn"    = false,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
     "staging" = {
       "name"          = "staging",
@@ -81,7 +89,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 3,
-      "enable_cdn"    = true
+      "enable_cdn"    = true,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
     "production" = {
       "name"          = "production",
@@ -94,7 +106,11 @@ variable "environments" {
       "concurrency"   = 80,
       "min_instances" = 0,
       "max_instances" = 10,
-      "enable_cdn"    = true
+      "enable_cdn"    = true,
+      "reviewers"     = {
+                          "teams": [11043647],
+                          "users": []
+                        }
     }
   }
 }
