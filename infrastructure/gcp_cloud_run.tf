@@ -50,6 +50,10 @@ resource "google_cloud_run_v2_service" "services" {
   }
 
   depends_on = [google_project_service.services]
+
+  lifecycle {
+    ignore_changes = [template[0].containers[0].image]
+  }
 }
 
 # Assign the allUsersIngress tag to Cloud Run Services to enable public access
