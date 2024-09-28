@@ -30,26 +30,26 @@ resource "google_cloud_run_v2_service" "services" {
         cpu_idle          = each.value.service.cpu_idle
         startup_cpu_boost = each.value.service.cpu_boost
       }
-      startup_probe {
-        failure_threshold     = 3
-        initial_delay_seconds = 5
-        timeout_seconds       = 20
-        period_seconds        = 30
+      # startup_probe {
+      #   failure_threshold     = 3
+      #   initial_delay_seconds = 5
+      #   timeout_seconds       = 20
+      #   period_seconds        = 30
 
-        http_get {
-          path = "/"
-        }
-      }
-      liveness_probe {
-        failure_threshold     = 5
-        initial_delay_seconds = 10
-        timeout_seconds       = 5
-        period_seconds        = 60
+      #   http_get {
+      #     path = "/"
+      #   }
+      # }
+      # liveness_probe {
+      #   failure_threshold     = 5
+      #   initial_delay_seconds = 10
+      #   timeout_seconds       = 5
+      #   period_seconds        = 60
 
-        http_get {
-          path = "/"
-        }
-      }
+      #   http_get {
+      #     path = "/"
+      #   }
+      # }
     }
     scaling {
       min_instance_count = each.value.service.min_instances
