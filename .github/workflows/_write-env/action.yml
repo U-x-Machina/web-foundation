@@ -46,4 +46,4 @@ runs:
       run: echo 'BASIC_AUTH_USER="${{ fromJSON(inputs.vars).BASIC_AUTH_USER }}"' >> .env
 
     - shell: bash
-      run: echo 'BASIC_AUTH_PASSWORD="${{ fromJSON(inputs.vars).BASIC_AUTH_PASSWORD }}"' >> .env
+      run: echo 'BASIC_AUTH_PASSWORD="${{ fromJSON(inputs.secrets).BASIC_AUTH_PASSWORD }}"' >> .env
