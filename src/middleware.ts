@@ -7,11 +7,6 @@ export const config = {
 export function middleware(req: NextRequest) {
   const basicAuthEnabled = process.env.BASIC_AUTH_ENABLED;
 
-  return NextResponse.json({
-    enabled: process.env.BASIC_AUTH_ENABLED,
-    user: process.env.BASIC_AUTH_USER
-  }, { status: 401 })
-
   if (!basicAuthEnabled) {
     return NextResponse.next();
   }

@@ -38,3 +38,12 @@ runs:
 
     - shell: bash
       run: echo 'NEXT_PRIVATE_REVALIDATION_KEY="${{ fromJSON(inputs.vars).NEXT_PRIVATE_REVALIDATION_KEY }}"' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_ENABLED=${{ fromJSON(inputs.vars).BASIC_AUTH_ENABLED }}' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_USER="${{ fromJSON(inputs.vars).BASIC_AUTH_USER }}"' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_PASSWORD="${{ fromJSON(inputs.vars).BASIC_AUTH_PASSWORD }}"' >> .env
