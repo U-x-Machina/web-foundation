@@ -45,72 +45,94 @@ variable "environments" {
   description = "Environments configuration"
   default = {
     "development" = {
-      "name"          = "development",
-      "subdomain"     = "development",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "512Mi",
-      "cpu_boost"     = false,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 1,
-      "enable_cdn"    = false,
-      "reviewers"     = {
-                          "teams": [],
-                          "users": []
-                        }
+      "name"            = "development",
+      "subdomain"       = "development",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "512Mi",
+      "cpu_boost"       = false,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 1,
+      "enable_cdn"      = false,
+      "reviewers"       = {
+                            "teams": [],
+                            "users": []
+                          }
     }
     "test" = {
-      "name"          = "test",
-      "subdomain"     = "test",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "512Mi",
-      "cpu_boost"     = false,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 2,
-      "enable_cdn"    = false,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "test",
+      "subdomain"       = "test",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "512Mi",
+      "cpu_boost"       = false,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 2,
+      "enable_cdn"      = false,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
     }
     "staging" = {
-      "name"          = "staging",
-      "subdomain"     = "staging",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "1Gi",
-      "cpu_boost"     = true,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 3,
-      "enable_cdn"    = true,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "staging",
+      "subdomain"       = "staging",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "1Gi",
+      "cpu_boost"       = true,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 3,
+      "enable_cdn"      = true,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
     }
     "production" = {
-      "name"          = "production",
-      "subdomain"     = "",
-      "regions"       = ["us-central1", "europe-west1", "asia-east1"]
-      "cpu"           = 1,
-      "memory"        = "1Gi",
-      "cpu_boost"     = true,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 10,
-      "enable_cdn"    = true,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "production",
+      "subdomain"       = "",
+      "regions"         = ["us-central1", "europe-west1", "asia-east1"]
+      "cpu"             = 1,
+      "memory"          = "1Gi",
+      "cpu_boost"       = true,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 10,
+      "enable_cdn"      = true,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
+    }
+  }
+}
+
+variable "basic_auth" {
+  description = "Basic Auth configuration"
+  default = {
+    "development" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "test" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "staging" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "production" = {
+      "enabled" = true,
+      "user"    = "uxm"
     }
   }
 }
