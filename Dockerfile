@@ -18,5 +18,6 @@ COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=prod-deps /app/package.json /app
 COPY --from=build /app/.next /app/.next
 COPY --from=build /app/public /app/public
+COPY --from=build /app/.env /app/.env
 EXPOSE 8080
 CMD [ "pnpm", "start" ]
