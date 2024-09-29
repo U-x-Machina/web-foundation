@@ -5,7 +5,7 @@ export const config = {
 };
 
 export function middleware(req: NextRequest) {
-  const basicAuthEnabled = true;
+  const basicAuthEnabled = process.env.BASIC_AUTH_ENABLED;
 
   if (!basicAuthEnabled) {
     return NextResponse.next();
@@ -17,8 +17,8 @@ export function middleware(req: NextRequest) {
     const authValue = basicAuth.split(" ")[1];
     const [user, pwd] = atob(authValue).split(":");
 
-    const validUser = 'user';
-    const validPassWord = 'password';
+    const validUser = process.env.BASIC_AUTH_USER;
+    const validPassWord = process.env.BASIC_AUTH_PASSWORD;
 
     if (user === validUser && pwd === validPassWord) {
       return NextResponse.next();
