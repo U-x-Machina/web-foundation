@@ -245,6 +245,19 @@ resource "github_actions_environment_secret" "basic_auth_password" {
 ###
 # Outputs
 ###
+output "basic_auth" {
+  value = flatten([
+    for env in var.environments : {
+      "${env.name}" = {
+        "enabled"  = var.basic_auth[env.name].enabled
+        "user"     = var.basic_auth[env.name].user
+        "password" = random_password.basic_auth[env.name].result
+      }
+    }
+  ])
+  sensitive = true
+}
+
 output "draft_secret" {
   value = flatten([
     for env in var.environments : {
