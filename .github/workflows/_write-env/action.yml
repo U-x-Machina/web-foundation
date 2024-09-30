@@ -47,3 +47,9 @@ runs:
 
     - shell: bash
       run: echo 'BASIC_AUTH_PASSWORD="${{ fromJSON(inputs.secrets).BASIC_AUTH_PASSWORD }}"' >> .env
+
+    - shell: bash
+      run: echo 'ADMIN_EMAIL="${{ fromJSON(inputs.vars).ADMIN_EMAIL }}"' >> .env
+
+    - shell: bash
+      run: echo 'ADMIN_PASSWORD="${{ fromJSON(inputs.secrets).ADMIN_PASSWORD }}"' >> .env
