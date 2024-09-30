@@ -3,7 +3,9 @@
 # Overview:
 #
 # 1. Authenticates to Google Cloud Platform using Identity Federation
-# 2. Deploys input image to given Google Cloud Run service
+# 2. Runs database migration
+# 3. Deploys input image to given Google Cloud Run service
+# 4. If deployment fails, it rolls back the database migration
 
 name: 'Deploy Docker Container to Google Cloud Run'
 description: 'Deploys an existing Docker Container to multiple Google Cloud Run services'
@@ -27,6 +29,9 @@ inputs:
   image:
     description: 'Docker Container image URL to deploy'
     required: true
+  image-migration:
+    description: 'Docker Migration Container image URL'
+    required: true
 
 runs:
   using: 'composite'
@@ -41,8 +46,19 @@ runs:
         workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
         service_account: '${{ inputs.gcp-service-account }}'
 
+    - name: Migrate database
+      shell: bash
+      run: |-
+        docker run --entrypoint '/bin/bash' ${{ inputs.image-migration }} -c 'pnpm payload migrate'
+
     - name: Deploy to Cloud Run
       id: deploy
       shell: bash
       run: |-
         gcloud run deploy ${{ inputs.service }}-${{ inputs.region }} --region=${{ inputs.region }} --image=${{ inputs.image }}
+
+    - name: Reverse database migration
+      if: failure()
+      shell: bash
+      run: |-
+        docker run --entrypoint '/bin/bash' ${{ inputs.image-migration }} -c 'pnpm payload migrate:down'
