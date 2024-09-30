@@ -137,6 +137,24 @@ variable "basic_auth" {
   }
 }
 
+variable "admin_auth" {
+  description     = "Payload CMS admin auth configuration"
+  default = {
+    "development" = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "test"        = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "staging"     = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "production"  = {
+      "email"     = "admin@uxmachina.co"
+    }
+  }
+}
+
 variable "gar_location" {
   type        = string
   description = "Google Artifact Registry location"
