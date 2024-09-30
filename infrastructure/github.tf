@@ -285,9 +285,8 @@ output "cms_auth" {
   value = flatten([
     for env in var.environments : {
       "${env.name}" = {
-        "enabled"  = var.basic_auth[env.name].enabled
-        "user"     = var.basic_auth[env.name].user
-        "password" = random_password.basic_auth[env.name].result
+        "email"    = var.admin_auth[env.name].email
+        "password" = random_password.admin_password[env.name].result
       }
     }
   ])
