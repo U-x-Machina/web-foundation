@@ -49,6 +49,7 @@ runs:
     - name: Migrate database
       shell: bash
       run: |-
+        docker pull ${{ inputs.image-migration }}
         docker run --entrypoint '/bin/bash' ${{ inputs.image-migration }} -c 'pnpm payload migrate'
 
     - name: Deploy to Cloud Run
