@@ -20,6 +20,9 @@ inputs:
   gcp-workload-identity-provider:
     description: 'Google Cloud Platform Workload Identity Provider name'
     required: true
+  gar-location:
+    description: 'Google Artifact Registry location'
+    required: true
   service:
     description: 'Google Cloud Run service to deploy the image to'
     required: true
@@ -46,10 +49,17 @@ runs:
         workload_identity_provider: '${{ inputs.gcp-workload-identity-provider }}'
         service_account: '${{ inputs.gcp-service-account }}'
 
+    - name: Docker Auth
+      id: docker-auth
+      uses: 'docker/login-action@v3'
+      with:
+        registry: ${{ inputs.gar-location }}-docker.pkg.dev
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
+
     - name: Migrate database
       shell: bash
       run: |-
-        docker pull ${{ inputs.image-migration }}
         docker run --entrypoint '/bin/bash' ${{ inputs.image-migration }} -c 'pnpm payload migrate'
 
     - name: Deploy to Cloud Run
