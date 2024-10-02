@@ -1,7 +1,6 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
-import { payloadCloudPlugin } from '@payloadcms/plugin-cloud'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
@@ -15,6 +14,7 @@ import {
   UnderlineFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { gcsStorage } from '@payloadcms/storage-gcs'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp' // editor-import
@@ -184,7 +184,13 @@ export default buildConfig({
         },
       },
     }),
-    payloadCloudPlugin(), // storage-adapter-placeholder
+    gcsStorage({
+      collections: {
+        [Media.slug]: true,
+      },
+      bucket: process.env.GCS_BUCKET!,
+      options: {},
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET!,
   sharp,

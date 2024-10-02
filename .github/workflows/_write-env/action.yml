@@ -53,3 +53,6 @@ runs:
 
     - shell: bash
       run: echo 'ADMIN_PASSWORD="${{ fromJSON(inputs.secrets).ADMIN_PASSWORD }}"' >> .env
+
+    - shell: bash
+      run: echo 'GCS_BUCKET="${{ fromJSON(inputs.vars).GCS_BUCKET }}"' >> .env
