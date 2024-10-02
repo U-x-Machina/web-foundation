@@ -110,6 +110,12 @@ resource "github_actions_variable" "gcp_project_id" {
   value         = google_project.project.project_id
 }
 
+resource "github_actions_variable" "gcs_bucket" {
+  repository    = data.github_repository.repo.name
+  variable_name = "GCS_BUCKET"
+  value         = google_storage_bucket.payload_uploads.name
+}
+
 resource "github_actions_variable" "mongodb_atlas_project_id" {
   repository    = data.github_repository.repo.name
   variable_name = "MONGODB_ATLAS_PROJECT_ID"
