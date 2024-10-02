@@ -32,3 +32,12 @@ resource "google_storage_bucket_iam_member" "all_users" {
   member     = "allUsers"
   depends_on = [google_tags_location_tag_binding.gcs_binding]
 }
+
+# Add default compute Service Account permissions to upload to GCS
+resource "google_project_iam_binding" "default_compute_gcs" {
+  project = google_project.project.project_id
+  role    = "roles/storage.objectAdmin"
+  members = [
+    "serviceAccount:${data.google_service_account.default_compute.email}"
+  ]
+}
