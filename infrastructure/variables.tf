@@ -167,6 +167,12 @@ variable "gar_repository" {
   default     = "builds"
 }
 
+variable "gcs_location" {
+  type        = string
+  description = "Google Cloud Storage location"
+  default     = "EU"
+}
+
 variable "default_environment" {
   type        = string
   description = "Default environment to be used for Compute URL Map in case no host / URL is matched"
