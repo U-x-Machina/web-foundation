@@ -18,7 +18,7 @@ resource "google_storage_bucket" "payload_uploads" {
 }
 
 # Assign the publicAccess tag to GCS to enable public access
-resource "google_tags_location_tag_binding" "binding" {
+resource "google_tags_location_tag_binding" "gcs_binding" {
   parent    = "//storage.googleapis.com/buckets/${google_storage_bucket.payload_uploads.name}"
   tag_value = var.gcs_public_tag_value
   location  = google_storage_bucket.payload_uploads.location
