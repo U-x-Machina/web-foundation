@@ -24,3 +24,11 @@ resource "google_tags_location_tag_binding" "gcs_binding" {
   location   = google_storage_bucket.payload_uploads.location
   depends_on = [google_project_service.services]
 }
+
+# Allow public access to the bucket
+resource "google_storage_bucket_iam_member" "all_users" {
+  bucket     = google_storage_bucket.payload_uploads.name
+  role       = "roles/storage.objectViewer"
+  member     = "allUsers"
+  depends_on = [google_tags_location_tag_binding.gcs_binding]
+}
