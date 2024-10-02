@@ -173,6 +173,11 @@ variable "gcs_location" {
   default     = "EU"
 }
 
+variable "gcs_public_tag_value" {
+  type        = string
+  description = "Tag value for Google Cloud Storage public access"
+}
+
 variable "default_environment" {
   type        = string
   description = "Default environment to be used for Compute URL Map in case no host / URL is matched"

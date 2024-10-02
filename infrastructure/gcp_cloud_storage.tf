@@ -1,3 +1,4 @@
+# Create GCS bucket for uploads
 resource "google_storage_bucket" "payload_uploads" {
   project       = google_project.project.project_id
   name          = "${google_project.project.project_id}-uploads"
@@ -14,4 +15,10 @@ resource "google_storage_bucket" "payload_uploads" {
     response_header = ["*"]
     max_age_seconds = 3600
   }
+}
+
+# Assign the publicAccess tag to GCS to enable public access
+resource "google_tags_tag_binding" "binding" {
+  parent    = google_storage_bucket.payload_uploads.self_link
+  tag_value = var.gcs_public_tag_value
 }
