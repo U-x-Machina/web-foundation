@@ -95,6 +95,8 @@ runs:
       id: build-migration
       shell: bash
       run: |-
+        echo $GOOGLE_APPLICATION_CREDENTIALS
+        echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
         IMAGE_MIGRATION="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}-migration:${{ github.sha }}"
         docker build --build-arg GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS} -t ${IMAGE_MIGRATION} -f DockerfileMigration ./
         echo "image=${IMAGE_MIGRATION}" >> $GITHUB_OUTPUT
