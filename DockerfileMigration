@@ -5,6 +5,6 @@ RUN corepack enable
 WORKDIR /app
 
 FROM base AS migration
-ENV GOOGLE_APPLICATION_CREDENTIALS="gha-creds-intentional-typo.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="gha-creds.json"
 COPY . /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
