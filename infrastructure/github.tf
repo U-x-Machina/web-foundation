@@ -155,7 +155,7 @@ resource "github_actions_environment_variable" "gcs_bucket" {
   repository    = data.github_repository.repo.name
   environment   = each.value.environment
   variable_name = "GCS_BUCKET"
-  value         = google_storage_bucket.payload_uploads[each.value.environment].name
+  value         = google_storage_bucket.payload_uploads[each.value.env.name].name
 }
 
 resource "github_actions_environment_variable" "payload_public_server_url" {
