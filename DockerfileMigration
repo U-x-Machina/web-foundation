@@ -1,11 +1,4 @@
 FROM node:20-slim AS base
-ARG GOOGLE_APPLICATION_CREDENTIALS
-ENV GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
-RUN echo "****************************************"
-RUN echo "****************************************"
-RUN echo "****************************************"
-RUN echo $GOOGLE_APPLICATION_CREDENTIALS
-RUN echo ${GOOGLE_APPLICATION_CREDENTIALS}
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -13,6 +6,6 @@ WORKDIR /app
 
 FROM base AS migration
 ARG GOOGLE_APPLICATION_CREDENTIALS
-ENV GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+ENV GOOGLE_APPLICATION_CREDENTIALS="gha-creds.json"
 COPY . /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
