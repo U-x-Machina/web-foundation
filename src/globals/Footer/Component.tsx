@@ -16,11 +16,13 @@ export async function Footer() {
       <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
           <picture>
-            <img
-              alt={(footer.logo as Media).alt}
-              className="max-w-[6rem] invert-0"
-              src={(footer.logo as Media).url!}
-            />
+            {footer.logo && (
+              <img
+                alt={(footer.logo as Media).alt}
+                className="max-w-[6rem] invert-0"
+                src={(footer.logo as Media).url!}
+              />
+            )}
           </picture>
         </Link>
 

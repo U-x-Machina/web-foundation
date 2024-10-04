@@ -34,11 +34,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <Link href="/">
-        <img
-          alt={(header.logo as Media).alt}
-          className="max-w-[9.375rem] invert dark:invert-0"
-          src={(header.logo as Media).url!}
-        />
+        {header.logo && (
+          <img
+            alt={(header.logo as Media).alt}
+            className="max-w-[9.375rem] invert dark:invert-0"
+            src={(header.logo as Media).url!}
+          />
+        )}
       </Link>
       <HeaderNav header={header} />
     </header>
