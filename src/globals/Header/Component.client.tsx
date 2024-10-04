@@ -4,9 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-import type { Header } from '@/payload-types'
+import type { Header, Media } from '@/payload-types'
 
-import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 
 interface HeaderClientProps {
@@ -35,7 +34,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <Link href="/">
-        <Logo />
+        <img
+          alt={(header.logo as Media).alt}
+          className="max-w-[9.375rem] invert dark:invert-0"
+          src={(header.logo as Media).url!}
+        />
       </Link>
       <HeaderNav header={header} />
     </header>

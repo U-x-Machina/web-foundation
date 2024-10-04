@@ -28,8 +28,9 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
 import { seedHandler } from './endpoints/seedHandler'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
+import { Footer } from './globals/Footer/config'
+import { Header } from './globals/Header/config'
+import { LandingPage } from './globals/LandingPage/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
 
 const filename = fileURLToPath(import.meta.url)
@@ -47,7 +48,7 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
 export default buildConfig({
   collections: [Pages, Posts, Media, Categories, Users],
-  globals: [Header, Footer],
+  globals: [Header, Footer, LandingPage],
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
