@@ -110,12 +110,6 @@ resource "github_actions_variable" "gcp_project_id" {
   value         = google_project.project.project_id
 }
 
-resource "github_actions_variable" "gcs_bucket" {
-  repository    = data.github_repository.repo.name
-  variable_name = "GCS_BUCKET"
-  value         = google_storage_bucket.payload_uploads.name
-}
-
 resource "github_actions_variable" "mongodb_atlas_project_id" {
   repository    = data.github_repository.repo.name
   variable_name = "MONGODB_ATLAS_PROJECT_ID"
@@ -154,6 +148,14 @@ resource "github_actions_environment_variable" "gcp_regions" {
   environment   = each.value.environment
   variable_name = "GCP_REGIONS"
   value         = jsonencode(each.value.env.regions)
+}
+
+resource "github_actions_environment_variable" "gcs_bucket" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "GCS_BUCKET"
+  value         = google_storage_bucket.payload_uploads[each.value.environment].name
 }
 
 resource "github_actions_environment_variable" "payload_public_server_url" {
