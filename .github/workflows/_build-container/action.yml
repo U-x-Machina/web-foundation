@@ -96,7 +96,7 @@ runs:
       shell: bash
       run: |-
         IMAGE_MIGRATION="${{ inputs.gar-location }}-docker.pkg.dev/${{ inputs.gcp-project-id }}/${{ inputs.gar-repository }}/${{ inputs.gcp-project-id }}-${{ inputs.environment }}-migration:${{ github.sha }}"
-        docker build --build-arg GOOGLE_APPLICATION_CREDENTIALS=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} -t ${IMAGE_MIGRATION} -f DockerfileMigration ./
+        docker build --build-arg GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS} -t ${IMAGE_MIGRATION} -f DockerfileMigration ./
         echo "image=${IMAGE_MIGRATION}" >> $GITHUB_OUTPUT
 
     - name: Push the migration container
@@ -126,3 +126,9 @@ runs:
       shell: bash
       run: |-
         docker push ${{ steps.build.outputs.image }}
+
+    - name: Reverse database migration
+      if: failure()
+      shell: bash
+      run: |-
+        docker run --entrypoint '/bin/bash' ${{ steps.build-migration.outputs.image }} -c 'pnpm payload migrate:down'
