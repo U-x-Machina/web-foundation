@@ -32,4 +32,10 @@ export const Header: GlobalConfig = {
   hooks: {
     afterChange: [revalidateHeader],
   },
+  admin: {
+    livePreview: {
+      url: 'http://localhost:3000?draft=true',
+    },
+    preview: (doc, options) => 'http://localhost:3000?draft=true',
+  },
 }

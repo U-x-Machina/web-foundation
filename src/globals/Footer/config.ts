@@ -32,4 +32,10 @@ export const Footer: GlobalConfig = {
   hooks: {
     afterChange: [revalidateFooter],
   },
+  admin: {
+    livePreview: {
+      url: 'http://localhost:3000?draft=true',
+    },
+    preview: (doc, options) => 'http://localhost:3000?draft=true',
+  },
 }
