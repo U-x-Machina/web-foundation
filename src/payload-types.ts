@@ -29,6 +29,7 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'landing-page': LandingPage;
   };
   locale: null;
   user: User & {
@@ -666,6 +667,7 @@ export interface PayloadMigration {
  */
 export interface Header {
   id: string;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         link: {
@@ -690,6 +692,7 @@ export interface Header {
  */
 export interface Footer {
   id: string;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         link: {
@@ -705,6 +708,17 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page".
+ */
+export interface LandingPage {
+  id: string;
+  header?: string | null;
+  paragraph?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

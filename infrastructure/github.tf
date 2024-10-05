@@ -150,6 +150,14 @@ resource "github_actions_environment_variable" "gcp_regions" {
   value         = jsonencode(each.value.env.regions)
 }
 
+resource "github_actions_environment_variable" "gcs_bucket" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "GCS_BUCKET"
+  value         = google_storage_bucket.payload_uploads[each.value.env.name].name
+}
+
 resource "github_actions_environment_variable" "payload_public_server_url" {
   for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name

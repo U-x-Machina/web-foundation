@@ -32,7 +32,8 @@ variable "google_project_services" {
     "run.googleapis.com",
     "compute.googleapis.com",
     "artifactregistry.googleapis.com",
-    "vpcaccess.googleapis.com"
+    "vpcaccess.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
 }
 
@@ -165,6 +166,17 @@ variable "gar_repository" {
   type        = string
   description = "Google Artifact Registry repository name"
   default     = "builds"
+}
+
+variable "gcs_location" {
+  type        = string
+  description = "Google Cloud Storage location"
+  default     = "EU"
+}
+
+variable "gcs_public_tag_value" {
+  type        = string
+  description = "Tag value for Google Cloud Storage public access"
 }
 
 variable "default_environment" {

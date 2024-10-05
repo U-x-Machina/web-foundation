@@ -1,14 +1,13 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
-import React from 'react'
 
-import type { Footer } from '@/payload-types'
+import type { Footer, Media } from '@/payload-types'
 
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
+import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 
 export async function Footer() {
-  const footer: Footer = await getCachedGlobal('footer')()
+  const footer: Footer = await getCachedGlobal('footer', 1)()
 
   const navItems = footer?.navItems || []
 
@@ -17,11 +16,13 @@ export async function Footer() {
       <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
           <picture>
-            <img
-              alt="Payload Logo"
-              className="max-w-[6rem] invert-0"
-              src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/payload/src/admin/assets/images/payload-logo-light.svg"
-            />
+            {footer.logo && (
+              <img
+                alt={(footer.logo as Media).alt}
+                className="max-w-[6rem] invert-0"
+                src={(footer.logo as Media).url!}
+              />
+            )}
           </picture>
         </Link>
 
