@@ -1,9 +1,18 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import type { LandingPage } from '@/payload-types'
+import { getMeUser } from '@/utilities/getMeUser'
 
-export default async function LandingPage() {
-  const landingPage: LandingPage = await getCachedGlobal('landing-page')()
+type Props = {
+  searchParams: { draft: boolean | undefined }
+}
+
+export default async function LandingPage({ searchParams }: Props) {
+  const landingPage: LandingPage = await getCachedGlobal(
+    'landing-page',
+    0,
+    !!searchParams.draft && !!(await getMeUser()).user,
+  )()
 
   return (
     <div className="container py-28">
