@@ -15,7 +15,11 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "db:init": "docker run -d -p 27017:27017 -h $(hostname) --name mongo mongo:6.0.3 --replSet=test && sleep 4 && docker exec mongo mongosh --quiet --eval \"rs.initiate();\"",
+    "db:start": "docker start mongo",
+    "db:stop": "docker stop mongo",
+    "db:observe": "node scripts/observe-db-changes.js"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "3.0.0-beta.110",
@@ -63,8 +67,10 @@
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "autoprefixer": "^10.4.20",
     "copyfiles": "^2.4.1",
+    "dotenv": "^16.4.5",
     "eslint": "^9.11.1",
     "eslint-config-next": "15.0.0-canary.160",
+    "mongodb": "^6.9.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.13",
