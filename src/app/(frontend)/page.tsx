@@ -1,18 +1,11 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import type { LandingPage } from '@/payload-types'
-import { getMeUser } from '@/utilities/getMeUser'
+import { draftMode } from 'next/headers'
 
-type Props = {
-  searchParams: { draft: boolean | undefined }
-}
-
-export default async function LandingPage({ searchParams }: Props) {
-  const landingPage: LandingPage = await getCachedGlobal(
-    'landing-page',
-    0,
-    !!searchParams.draft && !!(await getMeUser()).user,
-  )()
+export default async function LandingPage() {
+  const { isEnabled: draft } = draftMode()
+  const landingPage: LandingPage = await getCachedGlobal('landing-page', 0, draft)()
 
   return (
     <div className="container py-28">

@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { link } from '@/fields/link'
+import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { revalidateHeader } from './hooks/revalidateHeader'
 
 export const Header: GlobalConfig = {
@@ -34,8 +35,9 @@ export const Header: GlobalConfig = {
   },
   admin: {
     livePreview: {
-      url: 'http://localhost:3000?draft=true',
+      url: `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
     },
-    preview: (doc, options) => 'http://localhost:3000?draft=true',
+    preview: (doc, options) =>
+      `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
   },
 }
