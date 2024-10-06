@@ -1,3 +1,4 @@
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import type { GlobalConfig } from 'payload'
 import { revalidateLandingPage } from './hooks/revalidateLandingPage'
@@ -5,20 +6,7 @@ import { revalidateLandingPage } from './hooks/revalidateLandingPage'
 export const LandingPage: GlobalConfig = {
   slug: 'landing-page',
   access: {
-    read: ({ req }) => {
-      // If there is a user logged in,
-      // let them retrieve all documents
-      if (req.user) return true
-
-      // If there is no user,
-      // restrict the documents that are returned
-      // to only those where `_status` is equal to `published`
-      return {
-        _status: {
-          equals: 'published',
-        },
-      }
-    },
+    read: (args) => authenticatedOrPublished(args),
   },
   fields: [
     {
