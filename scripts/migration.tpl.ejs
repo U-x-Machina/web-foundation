@@ -1,0 +1,74 @@
+import { MigrateDownArgs, MigrateUpArgs } from "@payloadcms/db-mongodb"
+import { reverseTransaction, transaction } from "@/utilities/migrations"
+
+interface MigrationContext {
+  backup: any
+}
+
+/**
+ * TODO: fill in a description of this migration.
+ */
+export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
+  throw new Error("TODO: check generated migration code and remove this error once done")
+
+  await transaction<MigrationContext>(
+    { payload, req },
+    // Update globals
+    [
+<% Object.keys(globals.updated).forEach(key => { -%>
+      // <%= key %>
+      async (ctx: MigrationContext) => {
+        // Save old value for reversal purposes
+        ctx.backup = ctx.backup || { collections: [], globals: {} }
+        const data = await payload.findGlobal({ slug: "<%= key %>" })
+        ctx.backup.globals["<%= key %>"] = {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+          "<%= propKey %>": data["<%= propKey %>"],
+<% }); -%>          
+        }
+        // Perform changes
+        await payload.updateGlobal({
+          req,
+          slug: "<%= key %>",
+          data: {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+            "<%= propKey %>": <%- JSON.stringify(globals.updated[key][propKey]) %>,
+<% }); -%>
+          },
+        })
+      },
+<% }); -%>
+    ],
+    down,
+  )
+}
+
+/**
+ * Reverses changes performed by the `up` function
+ */
+export async function down(
+  { payload, req }: MigrateDownArgs,
+  ctx: MigrationContext | undefined,
+  successfulSteps: number | undefined,
+): Promise<void> {
+  return await reverseTransaction<MigrationContext>(
+    [
+<% Object.keys(globals.updated).forEach(key => { -%>
+      async (ctx: MigrationContext) => {
+        // Reverse changes to `<%= key %>`
+        await payload.updateGlobal({
+          req,
+          slug: "<%= key %>",
+          data: {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+            "<%= propKey %>": ctx.backup?.globals?.["<%= key %>"]?.["<%= propKey %>"] || null,
+<% }); -%>
+          },
+        })
+      },
+<% }); -%>
+    ],
+    ctx,
+    successfulSteps,
+  )
+}

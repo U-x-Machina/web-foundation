@@ -1,6 +1,8 @@
 import { createRequire } from "module"
 import { dirname, resolve } from 'path'
 const require = createRequire(import.meta.url)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 import 'dotenv/config'
 import { existsSync } from "fs"
@@ -9,8 +11,6 @@ import { fileURLToPath } from "url"
 const config = require('../db-observer.config.json')
 const { MongoClient } = require("mongodb")
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 const TMP_DIR = resolve(__dirname, '../src/migrations/.tmp')
 const CHANGES_FILE_NAME = 'observed-changes.json'
 const SKIP_FIELDS = [

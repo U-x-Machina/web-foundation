@@ -21,6 +21,8 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
           'https://storage.googleapis.com/uxm-web-foundation-eb51-migrations/20241004_204432_landing/logo-uxmachina-black.svg',
         )
 
+        const bak = await payload.findGlobal({ slug: 'landing-page' })
+
         ctx.logo = await payload.create({
           collection: 'media',
           data: {
