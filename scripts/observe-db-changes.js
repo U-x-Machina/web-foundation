@@ -50,7 +50,57 @@ const writeChanges = async () => {
 }
 
 const onCollectionChange = (change) => {
+  if (change.operationType === 'insert') {
+    log(`[insert] [collection:${change.ns.coll}]`, change.fullDocument)
+    changes.collections.created.push({
+      collection: change.ns.coll,
+      id: change.fullDocument._id.toString(),
+      data: change.fullDocument
+    })
+  } else if (change.operationType === 'delete') {
+    log(`[delete] [collection:${change.ns.coll}]`, change.documentKey._id.toString())
+    const createdIndex = changes.collections.created.findIndex(obj => obj.id === change.documentKey._id.toString())
+    const updatedIndex = changes.collections.updated.findIndex(obj => obj.id === change.documentKey._id.toString())
+    if (createdIndex !== -1) {
+      changes.collections.created = changes.collections.created.filter(obj => obj.id !== change.documentKey._id.toString())
+    }
+    if (updatedIndex !== -1) {
+      changes.collections.updated = changes.collections.updated.filter(obj => obj.id !== change.documentKey._id.toString())
+    }
+    if (createdIndex === -1) {
+      // Means the object existed in the database prior to observation. We add it for deletion.
+      changes.collections.deleted.push({
+        collection: change.ns.coll,
+        id: change.documentKey._id.toString()
+      })
+    }
+  } else if (change.operationType === 'update') {
+    log(`[update] [collection:${change.ns.coll}] [id: ${change.fullDocument._id.toString()}]`, change.updateDescription.updatedFields)
+    const createdIndex = changes.collections.created.findIndex(obj => obj.id === change.fullDocument._id.toString())
+    const updatedIndex = changes.collections.updated.findIndex(obj => obj.id === change.fullDocument._id.toString())
+    if (createdIndex !== -1) {
+      // Document created during this observation, so we can just create its final version.
+      changes.collections.created[createdIndex].data = {
+        ...changes.collections.created[createdIndex].data,
+        ...change.updateDescription.updatedFields
+      }
+    } else if (updatedIndex !== -1) {
+      // Document existed before observation but has already been updated during observation. We merge the updates.
+      changes.collections.updated[updatedIndex].data = {
+        ...changes.collections.updated[updatedIndex].data,
+        ...change.updateDescription.updatedFields
+      }
+    } else {
+      // Document existed prior to observation and it is its first update.
+      changes.collections.updated.push({
+        collection: change.ns.coll,
+        id: change.fullDocument._id.toString(),
+        data: change.updateDescription.updatedFields
+      })
+    }
+  }
 
+  console.log(JSON.stringify(changes, null, 2))
 }
 
 const onGlobalChange = async (change) => {
@@ -58,7 +108,7 @@ const onGlobalChange = async (change) => {
   Object.keys(change.updateDescription.updatedFields).forEach(field => {
     if (SKIP_FIELDS.indexOf(field) === -1) {
       const value = change.updateDescription.updatedFields[field]
-      log(`[change] [global:${change.fullDocument.globalType}] [field:${field}] ${value}`)
+      log(`[update] [global:${change.fullDocument.globalType}] [field:${field}] ${value}`)
       changes.globals.updated[change.fullDocument.globalType][field] = value
     }
   });
@@ -74,11 +124,17 @@ async function run() {
 
   log('start')
 
-  const globals = await db.collection('globals')
+  const globals = db.collection('globals')
   const globalsPipeline = [
     { $match: { $or: config.globals.map(globalName => ({ 'fullDocument.globalType': globalName })) } },
   ];
   const globalsChangeStream = globals.watch(globalsPipeline, { fullDocument: 'updateLookup' });
   globalsChangeStream.on('change', onGlobalChange);
+
+  config.collections.forEach(collectionName => {
+    const collection = db.collection(collectionName)
+    const collectionChangeStream = collection.watch([], { fullDocument: 'updateLookup' });
+    collectionChangeStream.on('change', onCollectionChange);
+  });
 }
 run().catch(console.dir)

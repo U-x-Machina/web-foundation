@@ -1,4 +1,4 @@
 {
-  "collections": [],
+  "collections": ["redirects"],
   "globals": ["header", "footer", "landing-page"]
 }
