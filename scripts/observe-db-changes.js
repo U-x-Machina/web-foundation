@@ -9,7 +9,7 @@ import { existsSync } from "fs"
 import { writeFile } from "fs/promises"
 import { fileURLToPath } from "url"
 const config = require('../db-observer.config.json')
-const { MongoClient } = require("mongodb")
+const { MongoClient, ObjectId } = require("mongodb")
 
 const TMP_DIR = resolve(__dirname, '../src/migrations/.tmp')
 const CHANGES_FILE_NAME = 'observed-changes.json'
@@ -49,13 +49,23 @@ const writeChanges = async () => {
   await writeFile(resolve(TMP_DIR, CHANGES_FILE_NAME), JSON.stringify(changes, null, 2))
 }
 
-const onCollectionChange = (change) => {
+const sanitize = (obj) => {
+  let sanitized = {}
+  Object.keys(obj).forEach(key => {
+    if (SKIP_FIELDS.indexOf(key) === -1) {
+      sanitized[key] = obj[key]
+    }
+  })
+  return sanitized
+}
+
+const onCollectionChange = async (change) => {
   if (change.operationType === 'insert') {
     log(`[insert] [collection:${change.ns.coll}]`, change.fullDocument)
     changes.collections.created.push({
       collection: change.ns.coll,
       id: change.fullDocument._id.toString(),
-      data: change.fullDocument
+      data: sanitize(change.fullDocument)
     })
   } else if (change.operationType === 'delete') {
     log(`[delete] [collection:${change.ns.coll}]`, change.documentKey._id.toString())
@@ -71,7 +81,7 @@ const onCollectionChange = (change) => {
       // Means the object existed in the database prior to observation. We add it for deletion.
       changes.collections.deleted.push({
         collection: change.ns.coll,
-        id: change.documentKey._id.toString()
+        id: change.documentKey._id.toString(),
       })
     }
   } else if (change.operationType === 'update') {
@@ -95,12 +105,12 @@ const onCollectionChange = (change) => {
       changes.collections.updated.push({
         collection: change.ns.coll,
         id: change.fullDocument._id.toString(),
-        data: change.updateDescription.updatedFields
+        data: sanitize(change.updateDescription.updatedFields)
       })
     }
   }
 
-  console.log(JSON.stringify(changes, null, 2))
+  await writeChanges()
 }
 
 const onGlobalChange = async (change) => {
