@@ -8,6 +8,8 @@ import 'dotenv/config'
 import { existsSync } from "fs"
 import { writeFile } from "fs/promises"
 import { fileURLToPath } from "url"
+import util from 'util'
+const exec = util.promisify(require('child_process').exec)
 const config = require('../db-observer.config.json')
 const { MongoClient, ObjectId } = require("mongodb")
 
@@ -82,6 +84,7 @@ const onCollectionChange = async (change) => {
       changes.collections.deleted.push({
         collection: change.ns.coll,
         id: change.documentKey._id.toString(),
+        data: sanitize(change.fullDocumentBeforeChange)
       })
     }
   } else if (change.operationType === 'update') {
@@ -105,7 +108,8 @@ const onCollectionChange = async (change) => {
       changes.collections.updated.push({
         collection: change.ns.coll,
         id: change.fullDocument._id.toString(),
-        data: sanitize(change.updateDescription.updatedFields)
+        data: sanitize(change.updateDescription.updatedFields),
+        dataBefore: sanitize(change.fullDocumentBeforeChange)
       })
     }
   }
@@ -125,10 +129,22 @@ const onGlobalChange = async (change) => {
   await writeChanges()
 }
 
+const enableBeforeChange = async () => {
+  for (let i = 0; i < config.collections.length; ++i) {
+    log(`enabling fullDocumentBeforeChange for collection ${config.collections[i]}...`)
+    const { stdout, stderr } = await exec(`docker exec mongo mongosh --quiet --eval "db.runCommand ( { collMod: \\"${config.collections[i]}\\", changeStreamPreAndPostImages: { enabled: true } } );"`)
+    if (stderr) {
+      console.error(stderr)
+    }
+  }
+}
+
 async function run() {
   if (!existsSync(TMP_DIR)) {
     await mkdir(TMP_DIR)
   }
+
+  await enableBeforeChange()
 
   const db = client.db()
 
@@ -143,7 +159,7 @@ async function run() {
 
   config.collections.forEach(collectionName => {
     const collection = db.collection(collectionName)
-    const collectionChangeStream = collection.watch([], { fullDocument: 'updateLookup' });
+    const collectionChangeStream = collection.watch([], { fullDocument: 'updateLookup', fullDocumentBeforeChange: 'required' });
     collectionChangeStream.on('change', onCollectionChange);
   });
 }
