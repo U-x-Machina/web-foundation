@@ -1,13 +1,11 @@
-import { createRequire } from "module"
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from "url"
-const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 import ejs from 'ejs'
 import { existsSync, readFileSync } from "fs"
-import { readFile, rm, writeFile } from "fs/promises"
+import { readFile, writeFile } from "fs/promises"
 
 const TMP_DIR = resolve(__dirname, '../src/migrations/.tmp')
 const CHANGES_FILE_NAME = 'observed-changes.json'
