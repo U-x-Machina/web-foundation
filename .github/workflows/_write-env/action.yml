@@ -73,4 +73,6 @@ runs:
       run: echo 'SENTRY_DSN="${{ fromJSON(inputs.vars).SENTRY_DSN }}"' >> .env
 
     - shell: bash
-      run: echo 'GITHUB_REF_NAME="${{ github.ref_name }}"' >> .env
+      run: |-
+        GITHUB_REF_NAME="${{ github.ref_name }}"
+        echo 'GITHUB_REF_NAME="${GITHUB_REF_NAME//\//:}"' >> .env
