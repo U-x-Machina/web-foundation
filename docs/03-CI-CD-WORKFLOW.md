@@ -12,10 +12,10 @@ This single image embraces the flow we're using:
 
 ## Deployments
 Deployments happen in the following way:
-| Pushed branch | Deployment environment    | Requires approval |
-| ------------- | ------------------------- | ----------------- |
-| `develop`     | `development`             | no                |
-| `feature/*`   | `development`             | no                |
-| `release/*`   | `test`                    | yes               |
-| `hotfix/*`    | `test`                    | yes               |
-| `main`        | `staging` -> `production` | yes               |
+| Pushed branch         | Deployment environment    | Requires approval |
+| --------------------- | ------------------------- | ----------------- |
+| `develop`             | `development`             | no                |
+| `feature/*`           | `development`             | no                |
+| `release/*`           | `test`                    | yes               |
+| `hotfix/*`            | `test`                    | yes               |
+| `main` with tag `v**` | `staging` -> `production` | yes               |
