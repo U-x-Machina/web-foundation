@@ -29,6 +29,7 @@ const sentryConfig = {
 
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -55,7 +56,7 @@ const sentryConfig = {
   // See the following for more information:
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
+  automaticVercelMonitors: false,
 }
 
 export default withSentryConfig(withPayload(nextConfig), sentryConfig)
