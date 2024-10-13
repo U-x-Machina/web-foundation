@@ -70,3 +70,30 @@ resource "mongodbatlas_project_ip_access_list" "all_access" {
   cidr_block = "0.0.0.0/0"
   comment    = "Allow public access due to GCP NAT not being used"
 }
+
+# Save variables
+resource "github_actions_variable" "mongodb_atlas_project_id" {
+  repository    = data.github_repository.repo.name
+  variable_name = "MONGODB_ATLAS_PROJECT_ID"
+  value         = mongodbatlas_project.project.id
+}
+
+resource "github_actions_variable" "mongodb_atlas_public_api_key" {
+  repository    = data.github_repository.repo.name
+  variable_name = "MONGODB_ATLAS_PUBLIC_API_KEY"
+  value         = mongodbatlas_project_api_key.project_key.public_key
+}
+
+resource "github_actions_secret" "mongodb_atlas_private_api_key" {
+  repository      = data.github_repository.repo.name
+  secret_name     = "MONGODB_ATLAS_PRIVATE_API_KEY"
+  plaintext_value = mongodbatlas_project_api_key.project_key.private_key
+}
+
+resource "github_actions_environment_secret" "database_uri" {
+  for_each          = { for entry in local.envs: "${entry.environment}" => entry }
+  repository        = data.github_repository.repo.name
+  environment       = each.value.environment
+  secret_name       = "DATABASE_URI"
+  plaintext_value   = "mongodb+srv://${mongodbatlas_database_user.db_user[each.value.env.name].username}:${mongodbatlas_database_user.db_user[each.value.env.name].password}@${split("mongodb+srv://", mongodbatlas_serverless_instance.instances[each.value.env.name].connection_strings_standard_srv)[1]}"
+}

@@ -55,3 +55,12 @@ resource "google_project_iam_binding" "default_compute_gcs" {
     "serviceAccount:${data.google_service_account.default_compute.email}"
   ]
 }
+
+# Save variables
+resource "github_actions_environment_variable" "gcs_bucket" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "GCS_BUCKET"
+  value         = google_storage_bucket.payload_uploads[each.value.env.name].name
+}

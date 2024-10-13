@@ -121,3 +121,84 @@ resource "google_artifact_registry_repository" "builds_repository" {
   format        = "DOCKER"
   depends_on = [google_project_service.services]
 }
+
+# Save variables
+resource "github_actions_environment_variable" "gcp_service" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "GCP_SERVICE"
+  value         = each.value.env.name
+}
+
+resource "github_actions_environment_variable" "gcp_regions" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "GCP_REGIONS"
+  value         = jsonencode(each.value.env.regions)
+}
+
+resource "github_actions_environment_variable" "payload_public_server_url" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "PAYLOAD_PUBLIC_SERVER_URL"
+  value         = each.value.env.name == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.env.subdomain == "" ? "" : "${each.value.env.subdomain}."}${terraform.workspace}.${var.domain_dev}"
+}
+
+resource "github_actions_environment_variable" "next_public_server_url" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "NEXT_PUBLIC_SERVER_URL"
+  value         = each.value.env.name == "production" && var.domain_prod != "" ? "https://${var.domain_prod}" : "https://${each.value.env.subdomain == "" ? "" : "${each.value.env.subdomain}."}${terraform.workspace}.${var.domain_dev}"
+}
+
+resource "github_actions_environment_variable" "next_public_is_live" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "NEXT_PUBLIC_IS_LIVE"
+  value         = each.value.env.name == "production" ? true : false
+}
+
+resource "github_actions_environment_variable" "payload_public_draft_secret" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "PAYLOAD_PUBLIC_DRAFT_SECRET"
+  value         = random_password.draft_secret[each.value.env.name].result
+}
+
+resource "github_actions_environment_variable" "next_private_draft_secret" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "NEXT_PRIVATE_DRAFT_SECRET"
+  value         = random_password.draft_secret[each.value.env.name].result
+}
+
+resource "github_actions_environment_variable" "revalidation_key" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "REVALIDATION_KEY"
+  value         = random_password.revalidation_key[each.value.env.name].result
+}
+
+resource "github_actions_environment_variable" "next_private_revalidation_key" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "NEXT_PRIVATE_REVALIDATION_KEY"
+  value         = random_password.revalidation_key[each.value.env.name].result
+}
+
+resource "github_actions_environment_secret" "payload_secret" {
+  for_each          = { for entry in local.envs: "${entry.environment}" => entry }
+  repository        = data.github_repository.repo.name
+  environment       = each.value.environment
+  secret_name       = "PAYLOAD_SECRET"
+  plaintext_value   = random_password.payload_secret[each.value.env.name].result
+}
