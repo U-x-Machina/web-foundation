@@ -129,8 +129,8 @@ runs:
       run: |-
         docker push ${{ steps.build.outputs.image }}
 
-    - name: Reverse database migration
-      if: failure()
-      shell: bash
-      run: |-
-        docker run --entrypoint '/bin/bash' ${{ steps.build-migration.outputs.image }} -c 'pnpm payload migrate:down'
+    # - name: Reverse database migration
+    #   if: failure()
+    #   shell: bash
+    #   run: |-
+    #     docker run --entrypoint '/bin/bash' ${{ steps.build-migration.outputs.image }} -c 'pnpm payload migrate:down'
