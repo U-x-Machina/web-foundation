@@ -80,9 +80,9 @@ export async function reverseTransaction<ContextType>(
   if (successfulSteps !== undefined) {
     // Ran inside of a transaction, partial rollback
     startFrom = successfulSteps - 1
-    console.log('[transaction] rollback')
+    console.log('[transaction] partial rollback')
   } else {
-    console.log('[transaction] performing full rollback (payload migrate:down)')
+    console.log('[transaction] full rollback (payload migrate:down)')
   }
   try {
     for (let i = startFrom; i > -1; --i) {
@@ -95,7 +95,7 @@ export async function reverseTransaction<ContextType>(
   } catch (e) {
     console.error('[transaction] rollback error', e)
   }
-  if (!success && successfulSteps !== undefined) {
+  if (successfulSteps !== undefined) {
     console.log('[transaction] throwing error to inform Payload about the rollback')
     throw new Error('[transaction] rollback')
   }
