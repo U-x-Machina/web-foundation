@@ -21,3 +21,18 @@ resource "sentry_project" "default" {
 
   default_rules = true
 }
+
+# Create a key
+resource "sentry_key" "default" {
+  organization = var.sentry_org
+
+  project = sentry_project.default.slug
+  name    = "SDK key"
+}
+
+# Save variables
+resource "github_actions_variable" "sentry_dsn" {
+  repository    = data.github_repository.repo.name
+  variable_name = "SENTRY_DSN"
+  value         = sentry_key.default.dsn_public
+}
