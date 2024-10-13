@@ -31,6 +31,18 @@ resource "sentry_key" "default" {
 }
 
 # Save variables
+resource "github_actions_variable" "sentry_org" {
+  repository    = data.github_repository.repo.name
+  variable_name = "SENTRY_ORG"
+  value         = var.sentry_org
+}
+
+resource "github_actions_variable" "sentry_project" {
+  repository    = data.github_repository.repo.name
+  variable_name = "SENTRY_PROJECT"
+  value         = sentry_project.default.name
+}
+
 resource "github_actions_variable" "sentry_dsn" {
   repository    = data.github_repository.repo.name
   variable_name = "SENTRY_DSN"
