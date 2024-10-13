@@ -8,6 +8,15 @@ locals {
       }
     ]
   ]))
+
+  envs = distinct(flatten([
+    for env in var.environments : [
+      for type in ["build-", ""] : {
+        env         = env
+        environment = type == "build-" ? github_repository_environment.build[env.name].environment : github_repository_environment.deployment[env.name].environment
+      }
+    ]
+  ]))
 }
 
 # Create Google Cloud Run instances according to the config in vars
@@ -123,6 +132,14 @@ resource "google_artifact_registry_repository" "builds_repository" {
 }
 
 # Save variables
+resource "github_actions_environment_variable" "environment" {
+  for_each      = { for entry in local.envs: "${entry.environment}" => entry }
+  repository    = data.github_repository.repo.name
+  environment   = each.value.environment
+  variable_name = "ENVIRONMENT"
+  value         = each.value.env.name
+}
+
 resource "github_actions_environment_variable" "gcp_service" {
   for_each      = { for entry in local.envs: "${entry.environment}" => entry }
   repository    = data.github_repository.repo.name

@@ -54,14 +54,3 @@ resource "github_repository_environment_deployment_policy" "production" {
   environment       = github_repository_environment.deployment["production"].environment
   branch_pattern    = "main"
 }
-
-locals {
-  envs = distinct(flatten([
-    for env in var.environments : [
-      for type in ["build-", ""] : {
-        env         = env
-        environment = type == "build-" ? github_repository_environment.build[env.name].environment : github_repository_environment.deployment[env.name].environment
-      }
-    ]
-  ]))
-}
