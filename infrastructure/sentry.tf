@@ -31,6 +31,12 @@ resource "sentry_key" "default" {
 }
 
 # Save variables
+resource "github_actions_secret" "sentry_auth_token" {
+  repository      = data.github_repository.repo.name
+  secret_name     = "SENTRY_AUTH_TOKEN"
+  plaintext_value = var.sentry_auth_token
+}
+
 resource "github_actions_variable" "sentry_org" {
   repository    = data.github_repository.repo.name
   variable_name = "SENTRY_ORG"

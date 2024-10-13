@@ -228,6 +228,11 @@ variable "github_actions_deployer_service_account" {
   description = "Email of the Google Cloud Platform Service Account used by Workload Identity Federation to deploy from Github Actions"
 }
 
+variable "sentry_auth_token" {
+  type        = string
+  description = "Sentry Auth Token"
+}
+
 variable "sentry_org" {
   type        = string
   description = "Sentry organization"
