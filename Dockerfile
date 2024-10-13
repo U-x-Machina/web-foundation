@@ -2,6 +2,8 @@ FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+RUN apt-get update
+RUN apt-get install -y ca-certificates
 WORKDIR /app
 
 FROM base AS prod-deps

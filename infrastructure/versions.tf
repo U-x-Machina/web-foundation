@@ -14,6 +14,9 @@ terraform {
       source  = "integrations/github"
       version = "~> 6.0"
     }
+    sentry = {
+      source = "jianyuan/sentry"
+    }
   }
   required_version = ">= 1.9"
 }

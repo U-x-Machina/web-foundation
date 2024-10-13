@@ -1,6 +1,7 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import type { LandingPage } from '@/payload-types'
+import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 
 export default async function LandingPage() {
@@ -15,4 +16,10 @@ export default async function LandingPage() {
       </div>
     </div>
   )
+}
+
+export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {
+  return {
+    title: 'Web Foundation | U x Machina',
+  }
 }

@@ -13,7 +13,10 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
-      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' > .env
+      run: echo 'ENVIRONMENT="${{ fromJSON(inputs.vars).ENVIRONMENT }}"' > .env
+
+    - shell: bash
+      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' >> .env
 
     - shell: bash
       run: echo 'PAYLOAD_SECRET="${{ fromJSON(inputs.secrets).PAYLOAD_SECRET }}"' >> .env
@@ -56,3 +59,20 @@ runs:
 
     - shell: bash
       run: echo 'GCS_BUCKET="${{ fromJSON(inputs.vars).GCS_BUCKET }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_AUTH_TOKEN="${{ fromJSON(inputs.secrets).SENTRY_AUTH_TOKEN }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_ORG="${{ fromJSON(inputs.vars).SENTRY_ORG }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_PROJECT="${{ fromJSON(inputs.vars).SENTRY_PROJECT }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_DSN="${{ fromJSON(inputs.vars).SENTRY_DSN }}"' >> .env
+
+    - shell: bash
+      run: |-
+        GITHUB_REF_NAME="${{ github.ref_name }}"
+        echo "GITHUB_REF_NAME=${GITHUB_REF_NAME//\//:}" >> .env
