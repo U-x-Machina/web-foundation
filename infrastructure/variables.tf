@@ -33,7 +33,8 @@ variable "google_project_services" {
     "compute.googleapis.com",
     "artifactregistry.googleapis.com",
     "vpcaccess.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "analyticsadmin.googleapis.com"
   ]
 }
 
