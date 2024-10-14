@@ -244,3 +244,8 @@ variable "sentry_default_team" {
   description = "Default Sentry team to be added to projects"
   default     = "u-x-machina"
 }
+
+variable "google_analytics_tracking_id" {
+  type        = string
+  description = "Google Analytics tracking ID"
+}

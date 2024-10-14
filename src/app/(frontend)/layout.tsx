@@ -6,6 +6,7 @@ import React from 'react'
 import { cn } from 'src/utilities/cn'
 
 import { AdminBar } from '@/components/AdminBar'
+import { GoogleAnalytics } from '@/components/GoogleAnalytics'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Footer } from '@/globals/Footer/Component'
 import { Header } from '@/globals/Header/Component'
@@ -21,6 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
       <head>
+        <GoogleAnalytics trackingId={process.env.GOOGLE_ANALYTICS_TRACKING_ID} />
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
