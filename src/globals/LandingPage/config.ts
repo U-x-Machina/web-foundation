@@ -12,10 +12,12 @@ export const LandingPage: GlobalConfig = {
     {
       name: 'header',
       type: 'text',
+      localized: true,
     },
     {
       name: 'paragraph',
       type: 'text',
+      localized: true,
     },
   ],
   versions: {
