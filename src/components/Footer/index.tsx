@@ -3,10 +3,16 @@ import Link from 'next/link'
 
 import type { Footer, Media } from '@/payload-types'
 
+import { LanguageSelector } from '@/components/LanguageSelector'
 import { CMSLink } from '@/components/Link'
+import { SUPPORTED_LOCALES } from '@/i18n.config'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 
-export async function Footer() {
+interface Props {
+  locale: string
+}
+
+export async function Footer({ locale }: Props) {
   const footer: Footer = await getCachedGlobal('footer', 1)()
 
   const navItems = footer?.navItems || []
@@ -27,6 +33,7 @@ export async function Footer() {
         </Link>
 
         <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
+          <LanguageSelector currentLocale={locale} supportedLocales={SUPPORTED_LOCALES} />
           <ThemeSelector />
           <nav className="flex flex-col md:flex-row gap-4">
             {navItems.map(({ link }, i) => {

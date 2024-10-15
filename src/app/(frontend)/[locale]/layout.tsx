@@ -25,10 +25,12 @@ export function generateStaticParams() {
 
 export default async function RootLayout({
   children,
-  locale,
+  params: { locale },
 }: {
   children: React.ReactNode
-  locale: string
+  params: {
+    locale: string
+  }
 }) {
   unstable_setRequestLocale(locale)
   const { isEnabled } = draftMode()
@@ -56,7 +58,7 @@ export default async function RootLayout({
 
           <Header />
           <NextIntlClientProvider>{children}</NextIntlClientProvider>
-          <Footer />
+          <Footer locale={locale} />
         </Providers>
       </body>
     </html>
