@@ -5,6 +5,7 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import {
   BoldFeature,
   FixedToolbarFeature,
@@ -20,7 +21,6 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp' // editor-import
 import { fileURLToPath } from 'url'
 
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { Page, Post } from 'src/payload-types'
 import Categories from './collections/Categories'
 import { Media } from './collections/Media'
@@ -31,12 +31,13 @@ import { Footer } from './globals/Footer/config'
 import { Header } from './globals/Header/config'
 import { LandingPage } from './globals/LandingPage/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from './i18n/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  return doc?.title ? `${doc.title} | Web Foundation` : 'Web Foundation'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
@@ -48,6 +49,11 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 export default buildConfig({
   collections: [Pages, Posts, Media, Categories, Users],
   globals: [Header, Footer, LandingPage],
+  localization: {
+    locales: SUPPORTED_LOCALES,
+    defaultLocale: DEFAULT_LOCALE,
+    fallback: true,
+  },
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.

@@ -35,9 +35,10 @@ export const Footer: GlobalConfig = {
   },
   admin: {
     livePreview: {
-      url: `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
+      url: ({ locale }) =>
+        `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: `/${locale}` })}`,
     },
-    preview: (doc, options) =>
-      `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
+    preview: (doc, { locale }) =>
+      `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: `/${locale}` })}`,
   },
 }

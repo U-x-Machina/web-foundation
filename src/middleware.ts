@@ -1,14 +1,26 @@
+import createMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
+import { routing } from './i18n/routing'
 
 export const config = {
   matcher: ['/((?!_next|api|admin).*)'],
+}
+
+const i18nMiddleware = createMiddleware(routing)
+
+const routeLocalized = (req: NextRequest) => {
+  console.log(req.nextUrl.pathname)
+  if (req.nextUrl.pathname.indexOf('.') === -1 && !req.nextUrl.pathname.startsWith('/next/')) {
+    return i18nMiddleware(req as any)
+  }
+  return NextResponse.next()
 }
 
 export function middleware(req: NextRequest) {
   const basicAuthEnabled = process.env.BASIC_AUTH_ENABLED === 'true'
 
   if (!basicAuthEnabled) {
-    return NextResponse.next()
+    return routeLocalized(req)
   }
 
   const basicAuth = req.headers.get('authorization')
@@ -21,7 +33,7 @@ export function middleware(req: NextRequest) {
     const validPassWord = process.env.BASIC_AUTH_PASSWORD
 
     if (user === validUser && pwd === validPassWord) {
-      return NextResponse.next()
+      return routeLocalized(req)
     }
   }
 

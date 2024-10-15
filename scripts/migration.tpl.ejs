@@ -23,6 +23,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
         const results = await payload.find({
           req,
           collection: "<%= deleted.collection %>",
+          locale: "all",
           where: {
             and: [
 <% Object.keys(deleted.data).forEach(propKey => { -%>
@@ -70,6 +71,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
         const results = await payload.find({
           req,
           collection: "<%= updated.collection %>",
+          locale: "all",
           where: {
             and: [
 <% Object.keys(updated.dataBefore).forEach(propKey => { -%>
@@ -103,7 +105,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
       async (ctx: MigrationContext) => {
         // Save old value for reversal purposes
         ctx.backup = ctx.backup || { collections: [], globals: {} }
-        const data = await payload.findGlobal({ req, slug: "<%= key %>" })
+        const data = await payload.findGlobal({ req, slug: "<%= key %>", locale: "all" })
         ctx.backup.globals["<%= key %>"] = {
 <% Object.keys(globals.updated[key]).forEach(propKey => { -%>
           "<%= propKey %>": data["<%= propKey %>"],

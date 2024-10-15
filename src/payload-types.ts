@@ -31,7 +31,7 @@ export interface Config {
     footer: Footer;
     'landing-page': LandingPage;
   };
-  locale: null;
+  locale: 'en' | 'pl';
   user: User & {
     collection: 'users';
   };

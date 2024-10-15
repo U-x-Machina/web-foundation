@@ -5,7 +5,7 @@ const __dirname = dirname(__filename)
 
 import ejs from 'ejs'
 import { existsSync, readFileSync } from "fs"
-import { readFile, writeFile } from "fs/promises"
+import { readFile, rm, writeFile } from "fs/promises"
 
 const TMP_DIR = resolve(__dirname, '../src/migrations/.tmp')
 const CHANGES_FILE_NAME = 'observed-changes.json'

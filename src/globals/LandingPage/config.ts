@@ -12,10 +12,12 @@ export const LandingPage: GlobalConfig = {
     {
       name: 'header',
       type: 'text',
+      localized: true,
     },
     {
       name: 'paragraph',
       type: 'text',
+      localized: true,
     },
   ],
   versions: {
@@ -31,9 +33,11 @@ export const LandingPage: GlobalConfig = {
   admin: {
     group: 'Pages',
     livePreview: {
-      url: `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
+      url: ({ locale }) =>
+        `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: `/${locale}` })}`,
     },
-    preview: (doc, options) =>
-      `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: '/' })}`,
+    preview: (doc, { locale }) => {
+      return `${process.env.NEXT_PUBLIC_SERVER_URL}${generatePreviewPath({ path: `/${locale}` })}`
+    },
   },
 }
