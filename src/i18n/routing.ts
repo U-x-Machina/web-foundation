@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/i18n.config'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/i18n/config'
 import { createSharedPathnamesNavigation } from 'next-intl/navigation'
 import { defineRouting } from 'next-intl/routing'
 

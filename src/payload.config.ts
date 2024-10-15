@@ -31,7 +31,7 @@ import { Footer } from './globals/Footer/config'
 import { Header } from './globals/Header/config'
 import { LandingPage } from './globals/LandingPage/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from './i18n.config'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from './i18n/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

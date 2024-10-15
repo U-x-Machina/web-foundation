@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { LocaleInfo } from '@/i18n.config'
+import { LocaleInfo } from '@/i18n/config'
 import { usePathname, useRouter } from '@/i18n/routing'
 
 interface Props {

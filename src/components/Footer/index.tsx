@@ -5,7 +5,7 @@ import type { Footer, Media } from '@/payload-types'
 
 import { LanguageSelector } from '@/components/LanguageSelector'
 import { CMSLink } from '@/components/Link'
-import { SUPPORTED_LOCALES } from '@/i18n.config'
+import { SUPPORTED_LOCALES } from '@/i18n/config'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 
 interface Props {
