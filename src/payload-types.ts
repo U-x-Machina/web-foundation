@@ -719,6 +719,11 @@ export interface LandingPage {
   id: string;
   header?: string | null;
   paragraph?: string | null;
+  meta?: {
+    title?: string | null;
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
