@@ -1,4 +1,5 @@
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { SEO_FIELDS } from '@/fields/seo'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import type { GlobalConfig } from 'payload'
 import { revalidateLandingPage } from './hooks/revalidateLandingPage'
@@ -10,14 +11,25 @@ export const LandingPage: GlobalConfig = {
   },
   fields: [
     {
-      name: 'header',
-      type: 'text',
-      localized: true,
-    },
-    {
-      name: 'paragraph',
-      type: 'text',
-      localized: true,
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            {
+              name: 'header',
+              type: 'text',
+              localized: true,
+            },
+            {
+              name: 'paragraph',
+              type: 'text',
+              localized: true,
+            },
+          ],
+        },
+        SEO_FIELDS,
+      ],
     },
   ],
   versions: {
