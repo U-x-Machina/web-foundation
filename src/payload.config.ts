@@ -22,6 +22,7 @@ import sharp from 'sharp' // editor-import
 import { fileURLToPath } from 'url'
 
 import { Page, Post } from 'src/payload-types'
+import ABTests from './collections/ABTests'
 import Categories from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -47,7 +48,7 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 }
 
 export default buildConfig({
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, ABTests],
   globals: [Header, Footer, LandingPage],
   localization: {
     locales: SUPPORTED_LOCALES,

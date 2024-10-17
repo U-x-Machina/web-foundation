@@ -16,6 +16,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    'ab-tests': AbTest;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -542,6 +543,19 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ab-tests".
+ */
+export interface AbTest {
+  id: string;
+  testId: string;
+  description: string;
+  split: number;
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -606,6 +620,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'ab-tests';
+        value: string | AbTest;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -717,7 +735,14 @@ export interface Footer {
  */
 export interface LandingPage {
   id: string;
-  header?: string | null;
+  header?: {
+    test?: {
+      relationTo: 'ab-tests';
+      value: string | AbTest;
+    } | null;
+    variantA?: string | null;
+    variantB?: string | null;
+  };
   paragraph?: string | null;
   meta?: {
     title?: string | null;
