@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
-import { ABValue, ABVariant, ActiveABTestsInfo } from './abTesting/abTesting.types'
-import { generateABTestCookieKey } from './abTesting/abTesting.utils'
+import { ABValue, ABVariant, ActiveABTestsInfo } from './abTesting.types'
+import { generateABTestCookieKey } from './abTesting.utils'
 
 function log(...args) {
   console.log.apply(console, ['[ABTesting]', ...args])

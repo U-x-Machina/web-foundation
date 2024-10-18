@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
 
-import { useABTests } from '@/utilities/abTesting.client'
 import { ActiveABTestsInfo } from '@/utilities/abTesting/abTesting.types'
+import { useABTests } from '@/utilities/abTesting/client'
 
 interface Props {
   activeTests: ActiveABTestsInfo
