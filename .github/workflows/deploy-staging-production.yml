@@ -68,7 +68,7 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          gar-repository: ${{ vars.GAR_REPOSITORY }}
+          gar-location: ${{ vars.GAR_LOCATION }}
           image: ${{ needs.build-staging.outputs.image }}
           image-migration: ${{ needs.build-staging.outputs.image-migration }}
           service: ${{ vars.GCP_SERVICE }}
