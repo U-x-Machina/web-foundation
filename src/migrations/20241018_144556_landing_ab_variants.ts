@@ -63,7 +63,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
               variantA: 'Header variant A',
               variantB: 'Header variant B',
             },
-            paragraph: 'Demo project v. 0.0.2',
+            paragraph: 'Demo project v. 0.1.0',
             meta: {
               title: 'Web Foundation | U x Machina',
               description: 'State of the art web projects foundation',
@@ -79,7 +79,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
               variantA: 'Nagłówek wariant A',
               variantB: 'Nagłówek wariant B',
             },
-            paragraph: 'Projekt demonstracyjny v. 0.0.2',
+            paragraph: 'Projekt demonstracyjny v. 0.1.0',
             meta: {
               title: 'Web Foundation | U x Machina',
               description:
