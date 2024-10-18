@@ -1,0 +1,1 @@
+export { getABData } from './abTesting'

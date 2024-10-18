@@ -28,9 +28,10 @@ resource "random_password" "basic_auth" {
 
 # Generate CMS auth passwords for each env
 resource "random_password" "admin_password" {
-  for_each = var.environments
-  length   = 24
-  special  = true
+  for_each         = var.environments
+  length           = 24
+  special          = true
+  override_special = "*_-()[]{}<>=%+"
 }
 
 resource "github_actions_environment_variable" "basic_auth_enabled" {
