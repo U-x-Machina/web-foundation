@@ -31,6 +31,7 @@ export const getCachedGlobal = (
   const localizedSlug = locale ? `${slug}_${locale}` : slug
   const tagSlug = draft ? `${localizedSlug}_draft` : localizedSlug
   return unstable_cache(async () => getGlobal(slug, depth, locale, draft), [tagSlug], {
+    revalidate: 5 * 60, // 5 minutes
     tags: [`global_${tagSlug}`],
   })
 }
