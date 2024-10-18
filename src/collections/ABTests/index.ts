@@ -37,7 +37,7 @@ const ABTests: CollectionConfig = {
       admin: {
         step: 0.1,
         description:
-          'Ratio of people who should get this experiment active. E.g. 0.3 means this experiment will be served to 30% of visitors.',
+          'Ratio of A/B variants. E.g. 0.3 means that variant A will be served to 30% of visitors and variant B to 70%.',
       },
     },
     {

@@ -33,7 +33,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
           req,
           slug: 'landing-page',
           data: {
-            header: 'Web Foundation',
+            // header: 'Web Foundation',
             paragraph: 'Demo Project v. 0.0.2',
             meta: {
               title: 'Web Foundation | U x Machina',
@@ -46,7 +46,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
           req,
           slug: 'landing-page',
           data: {
-            header: 'Web Foundation',
+            // header: 'Web Foundation',
             paragraph: 'Projekt Demonstracyjny v. 0.0.2',
             meta: {
               title: 'Web Foundation | U x Machina',

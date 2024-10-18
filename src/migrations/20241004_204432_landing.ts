@@ -88,7 +88,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
           req,
           slug: 'landing-page',
           data: {
-            header: 'Web Foundation',
+            // header: 'Web Foundation',
             paragraph: 'Demo Project',
           },
         })
@@ -147,7 +147,7 @@ export async function down(
         await payload.updateGlobal({
           slug: 'landing-page',
           data: {
-            header: null,
+            // header: null,
             paragraph: null,
           },
         })

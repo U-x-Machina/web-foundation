@@ -9,7 +9,6 @@ export const config = {
 const i18nMiddleware = createMiddleware(routing)
 
 const routeLocalized = (req: NextRequest) => {
-  console.log(req.nextUrl.pathname)
   if (req.nextUrl.pathname.indexOf('.') === -1 && !req.nextUrl.pathname.startsWith('/next/')) {
     return i18nMiddleware(req as any)
   }
