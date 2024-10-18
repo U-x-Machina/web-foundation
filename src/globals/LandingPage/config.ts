@@ -1,4 +1,5 @@
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { ABGroupField } from '@/fields/abGroup'
 import { SEO_FIELDS } from '@/fields/seo'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import type { GlobalConfig } from 'payload'
@@ -16,11 +17,11 @@ export const LandingPage: GlobalConfig = {
         {
           label: 'Content',
           fields: [
-            {
+            ABGroupField('header', {
               name: 'header',
               type: 'text',
               localized: true,
-            },
+            }),
             {
               name: 'paragraph',
               type: 'text',

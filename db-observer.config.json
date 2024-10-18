@@ -1,4 +1,4 @@
 {
-  "collections": ["redirects"],
-  "globals": ["header", "footer", "landing-page"]
+  "collections": ["ab-tests"],
+  "globals": ["landing-page"]
 }

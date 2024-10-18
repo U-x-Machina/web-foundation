@@ -1,12 +1,14 @@
+import { AbTest } from '@/payload-types'
 import { reverseTransaction, transaction } from '@/utilities/migrations'
 import { MigrateDownArgs, MigrateUpArgs } from '@payloadcms/db-mongodb'
 
 interface MigrationContext {
   backup: any
+  abTestLanding1: AbTest
 }
 
 /**
- * Sets localized content for LandingPage texts and its SEO
+ * TODO: fill in a description of this migration.
  */
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   await transaction<MigrationContext>(
@@ -15,6 +17,25 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
       // Delete collections
 
       // Create collections
+      // Create ab-tests (id: 67127467fb335a348cdd7ad7)
+      async (ctx: MigrationContext) => {
+        ctx.backup = ctx.backup || { collections: {}, globals: {} }
+        const entity = await payload.create({
+          req,
+          collection: 'ab-tests',
+          data: {
+            testId: 'landing1',
+            description: 'LandingPage header variants',
+            split: 0.5,
+            active: true,
+          },
+        })
+        ctx.abTestLanding1 = entity
+        ctx.backup.collections['created:0'] = {
+          collection: 'ab-tests',
+          data: entity,
+        }
+      },
 
       // Update collections
 
@@ -25,36 +46,46 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
         ctx.backup = ctx.backup || { collections: [], globals: {} }
         const data = await payload.findGlobal({ req, slug: 'landing-page', locale: 'all' })
         ctx.backup.globals['landing-page'] = {
-          paragraph: data['paragraph'],
+          header: data['header'],
           meta: data['meta'],
         }
         // Perform changes
         await payload.updateGlobal({
           req,
           slug: 'landing-page',
+          locale: 'en',
           data: {
-            // header: 'Web Foundation',
-            paragraph: 'Demo Project v. 0.0.2',
+            header: {
+              test: {
+                relationTo: 'ab-tests',
+                value: ctx.abTestLanding1.id,
+              },
+              variantA: 'Header variant A',
+              variantB: 'Header variant B',
+            },
+            paragraph: 'Demo project v. 0.0.2',
             meta: {
               title: 'Web Foundation | U x Machina',
               description: 'State of the art web projects foundation',
             },
           },
-          locale: 'en',
         })
         await payload.updateGlobal({
           req,
           slug: 'landing-page',
+          locale: 'pl',
           data: {
-            // header: 'Web Foundation',
-            paragraph: 'Projekt Demonstracyjny v. 0.0.2',
+            header: {
+              variantA: 'Nagłówek wariant A',
+              variantB: 'Nagłówek wariant B',
+            },
+            paragraph: 'Projekt demonstracyjny v. 0.0.2',
             meta: {
               title: 'Web Foundation | U x Machina',
               description:
                 'Produkcyjna baza projektów webowych z użyciem najnowocześniejszych technologii',
             },
           },
-          locale: 'pl',
         })
       },
     ],
@@ -75,6 +106,15 @@ export async function down(
       // Reverse collection deletions
 
       // Reverse collection creations
+      // Reverse creation of ab-tests (id: 67127467fb335a348cdd7ad7)
+      async (ctx: MigrationContext) => {
+        const backup = ctx.backup.collections['created:0']
+        await payload.delete({
+          req,
+          collection: backup.collection,
+          id: backup.data.id,
+        })
+      },
 
       // Reverse collection updates
 
@@ -86,7 +126,6 @@ export async function down(
           slug: 'landing-page',
           data: {
             header: ctx.backup?.globals?.['landing-page']?.['header'] || null,
-            paragraph: ctx.backup?.globals?.['landing-page']?.['paragraph'] || null,
             meta: ctx.backup?.globals?.['landing-page']?.['meta'] || null,
           },
         })
