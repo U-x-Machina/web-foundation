@@ -13,7 +13,10 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
-      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' > .env
+      run: echo 'ENVIRONMENT="${{ fromJSON(inputs.vars).ENVIRONMENT }}"' > .env
+
+    - shell: bash
+      run: echo 'DATABASE_URI="${{ fromJSON(inputs.secrets).DATABASE_URI }}"' >> .env
 
     - shell: bash
       run: echo 'PAYLOAD_SECRET="${{ fromJSON(inputs.secrets).PAYLOAD_SECRET }}"' >> .env
@@ -38,3 +41,41 @@ runs:
 
     - shell: bash
       run: echo 'NEXT_PRIVATE_REVALIDATION_KEY="${{ fromJSON(inputs.vars).NEXT_PRIVATE_REVALIDATION_KEY }}"' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_ENABLED=${{ fromJSON(inputs.vars).BASIC_AUTH_ENABLED }}' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_USER="${{ fromJSON(inputs.vars).BASIC_AUTH_USER }}"' >> .env
+
+    - shell: bash
+      run: echo 'BASIC_AUTH_PASSWORD="${{ fromJSON(inputs.secrets).BASIC_AUTH_PASSWORD }}"' >> .env
+
+    - shell: bash
+      run: echo 'ADMIN_EMAIL="${{ fromJSON(inputs.vars).ADMIN_EMAIL }}"' >> .env
+
+    - shell: bash
+      run: echo 'ADMIN_PASSWORD="${{ fromJSON(inputs.secrets).ADMIN_PASSWORD }}"' >> .env
+
+    - shell: bash
+      run: echo 'GCS_BUCKET="${{ fromJSON(inputs.vars).GCS_BUCKET }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_AUTH_TOKEN="${{ fromJSON(inputs.secrets).SENTRY_AUTH_TOKEN }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_ORG="${{ fromJSON(inputs.vars).SENTRY_ORG }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_PROJECT="${{ fromJSON(inputs.vars).SENTRY_PROJECT }}"' >> .env
+
+    - shell: bash
+      run: echo 'SENTRY_DSN="${{ fromJSON(inputs.vars).SENTRY_DSN }}"' >> .env
+
+    - shell: bash
+      run: |-
+        GITHUB_REF_NAME="${{ github.ref_name }}"
+        echo "GITHUB_REF_NAME=${GITHUB_REF_NAME//\//:}" >> .env
+
+    - shell: bash
+      run: echo 'GOOGLE_ANALYTICS_TRACKING_ID="${{ fromJSON(inputs.vars).GOOGLE_ANALYTICS_TRACKING_ID }}"' >> .env

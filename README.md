@@ -1,4 +1,8 @@
-# Payload Website Template
+# Web Foundation
+
+[![Deploy to staging and production](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-staging-production.yml/badge.svg)](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-staging-production.yml)
+[![Deploy to test](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-test.yml/badge.svg)](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-test.yml)
+[![Deploy to development](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-development.yml/badge.svg)](https://github.com/U-x-Machina/web-foundation/actions/workflows/deploy-development.yml)
 
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
 

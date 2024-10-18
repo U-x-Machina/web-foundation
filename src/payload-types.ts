@@ -16,6 +16,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    'ab-tests': AbTest;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -29,8 +30,9 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'landing-page': LandingPage;
   };
-  locale: null;
+  locale: 'en' | 'pl';
   user: User & {
     collection: 'users';
   };
@@ -541,6 +543,19 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ab-tests".
+ */
+export interface AbTest {
+  id: string;
+  testId: string;
+  description: string;
+  split: number;
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -607,6 +622,10 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null)
     | ({
+        relationTo: 'ab-tests';
+        value: string | AbTest;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -666,6 +685,7 @@ export interface PayloadMigration {
  */
 export interface Header {
   id: string;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         link: {
@@ -690,6 +710,7 @@ export interface Header {
  */
 export interface Footer {
   id: string;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         link: {
@@ -705,6 +726,30 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page".
+ */
+export interface LandingPage {
+  id: string;
+  header?: {
+    test?: {
+      relationTo: 'ab-tests';
+      value: string | AbTest;
+    } | null;
+    variantA?: string | null;
+    variantB?: string | null;
+  };
+  paragraph?: string | null;
+  meta?: {
+    title?: string | null;
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

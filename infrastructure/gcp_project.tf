@@ -31,6 +31,13 @@ resource "google_project_service" "services" {
   disable_on_destroy = true
 }
 
+# Save variables
+resource "github_actions_variable" "gcp_project_id" {
+  repository    = data.github_repository.repo.name
+  variable_name = "GCP_PROJECT_ID"
+  value         = google_project.project.project_id
+}
+
 # Outputs
 output "gcp_project_name" {
   value = google_project.project.name

@@ -2,7 +2,8 @@ name: Deploy to staging and production
 
 on:
   push:
-    branches: [main]
+    tags:
+      - v**
 
 jobs:
   # Staging
@@ -15,6 +16,7 @@ jobs:
     outputs:
       regions-matrix: ${{ steps.regions.outputs.matrix }}
       image: ${{ steps.build-staging.outputs.image }}
+      image-migration: ${{ steps.build-staging.outputs.image-migration }}
 
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +68,9 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          gar-repository: ${{ vars.GAR_REPOSITORY }}
           image: ${{ needs.build-staging.outputs.image }}
+          image-migration: ${{ needs.build-staging.outputs.image-migration }}
           service: ${{ vars.GCP_SERVICE }}
           region: ${{ matrix.region }}
 
@@ -80,6 +84,7 @@ jobs:
     outputs:
       regions-matrix: ${{ steps.regions.outputs.matrix }}
       image: ${{ steps.build-production.outputs.image }}
+      image-migration: ${{ steps.build-production.outputs.image-migration }}
 
     steps:
       - uses: actions/checkout@v4
@@ -131,6 +136,8 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
           gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           gcp-workload-identity-provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          gar-location: ${{ vars.GAR_LOCATION }}
           image: ${{ needs.build-production.outputs.image }}
+          image-migration: ${{ needs.build-production.outputs.image-migration }}
           service: ${{ vars.GCP_SERVICE }}
           region: ${{ matrix.region }}

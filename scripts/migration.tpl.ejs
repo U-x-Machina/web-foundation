@@ -1,0 +1,200 @@
+import { MigrateDownArgs, MigrateUpArgs } from "@payloadcms/db-mongodb"
+import { reverseTransaction, transaction } from "@/utilities/migrations"
+
+interface MigrationContext {
+  backup: any
+}
+
+/**
+ * TODO: fill in a description of this migration.
+ */
+export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
+  throw new Error("TODO: check generated migration code and remove this error once done")
+
+  await transaction<MigrationContext>(
+    { payload, req },
+    [
+      // Delete collections
+<% collections.deleted.forEach((deleted, index) => { -%>
+      // Delete <%= deleted.collection %> (id: <%= deleted.id %>)
+      async (ctx: MigrationContext) => {
+        // Save old value for reversal purposes
+        ctx.backup = ctx.backup || { collections: {}, globals: {} }
+        const results = await payload.find({
+          req,
+          collection: "<%= deleted.collection %>",
+          locale: "all",
+          where: {
+            and: [
+<% Object.keys(deleted.data).forEach(propKey => { -%>
+              { "<%= propKey %>": { equals: <%- JSON.stringify(deleted.data[propKey], null, 2) %> }},
+<% }); -%>
+            ]
+          }
+        })
+        if (results.totalDocs === 1) {
+          const entity = results.docs[0]
+          ctx.backup.collections["deleted:<%= index %>"] = {
+            collection: "<%= deleted.collection %>",
+            data: entity,
+          }
+          // Perform changes
+          await payload.delete({ req, collection: "<%= deleted.collection %>", id: entity.id })
+        } else {
+          console.warn('Entity to delete not found', <%- JSON.stringify(deleted, null, 2) %>)
+        }
+      },
+<% }); -%>
+
+      // Create collections
+<% collections.created.forEach((created, index) => { -%>
+      // Create <%= created.collection %> (id: <%= created.id %>)
+      async (ctx: MigrationContext) => {
+        ctx.backup = ctx.backup || { collections: {}, globals: {} }
+        const entity = await payload.create({
+          req,
+          collection: "<%= created.collection %>",
+          data: <%- JSON.stringify(created.data, null, 2) %>
+        })
+        ctx.backup.collections["created:<%= index %>"] = {
+          collection: "<%= created.collection %>",
+          data: entity,
+        }
+      },
+<% }); -%>
+
+      // Update collections
+<% collections.updated.forEach((updated, index) => { -%>
+      // Update <%= updated.collection %> (id: <%= updated.id %>)
+      async (ctx: MigrationContext) => {
+        ctx.backup = ctx.backup || { collections: {}, globals: {} }
+        const results = await payload.find({
+          req,
+          collection: "<%= updated.collection %>",
+          locale: "all",
+          where: {
+            and: [
+<% Object.keys(updated.dataBefore).forEach(propKey => { -%>
+              { "<%= propKey %>": { equals: <%- JSON.stringify(updated.dataBefore[propKey], null, 2) %> }},
+<% }); -%>
+            ]
+          }
+        })
+        if (results.totalDocs === 1) {
+          const entity = results.docs[0]
+          ctx.backup.collections["updated:<%= index %>"] = {
+            collection: "<%= updated.collection %>",
+            data: entity,
+          }
+          // Perform changes
+          await payload.update({
+            req,
+            collection: "<%= updated.collection %>",
+            id: entity.id,
+            data: <%- JSON.stringify(updated.data, null, 2) %>
+          })
+        } else {
+          console.warn('Entity to update not found', <%- JSON.stringify(updated.dataBefore, null, 2) %>)
+        }
+      },
+<% }); -%>
+    
+      // Update globals
+<% Object.keys(globals.updated).forEach(key => { -%>
+      // Update global <%= key %>
+      async (ctx: MigrationContext) => {
+        // Save old value for reversal purposes
+        ctx.backup = ctx.backup || { collections: [], globals: {} }
+        const data = await payload.findGlobal({ req, slug: "<%= key %>", locale: "all" })
+        ctx.backup.globals["<%= key %>"] = {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+          "<%= propKey %>": data["<%= propKey %>"],
+<% }); -%>
+        }
+        // Perform changes
+        await payload.updateGlobal({
+          req,
+          slug: "<%= key %>",
+          data: {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+            "<%= propKey %>": <%- JSON.stringify(globals.updated[key][propKey], null, 2) %>,
+<% }); -%>
+          },
+        })
+      },
+<% }); -%>
+    ],
+    down,
+  )
+}
+
+/**
+ * Reverses changes performed by the `up` function
+ */
+export async function down(
+  { payload, req }: MigrateDownArgs,
+  ctx: MigrationContext | undefined,
+  successfulSteps: number | undefined,
+): Promise<void> {
+  return await reverseTransaction<MigrationContext>(
+    [
+      // Reverse collection deletions
+<% collections.deleted.forEach((deleted, index) => { -%>
+      // Reverse deletion of <%= deleted.collection %> (id: <%= deleted.id %>)
+      async (ctx: MigrationContext) => {
+        const backup = ctx.backup.collections["deleted:<%= index %>"]
+        await payload.create({
+          req,
+          collection: backup.collection,
+          data: backup.data,
+        })
+      },
+<% }); -%>
+
+      // Reverse collection creations
+<% collections.created.forEach((created, index) => { -%>
+      // Reverse creation of <%= created.collection %> (id: <%= created.id %>)
+      async (ctx: MigrationContext) => {
+        const backup = ctx.backup.collections["created:<%= index %>"]
+        await payload.delete({
+          req,
+          collection: backup.collection,
+          id: backup.data.id,
+        })
+      },
+<% }); -%>
+
+      // Reverse collection updates
+<% collections.updated.forEach((updated, index) => { -%>
+      // Reverse update of <%= updated.collection %> (id: <%= updated.id %>)
+      async (ctx: MigrationContext) => {
+        const backup = ctx.backup.collections["updated:<%= index %>"]
+        await payload.update({
+          req,
+          collection: backup.collection,
+          id: backup.data.id,
+          data: backup.data,
+        })
+      },
+<% }); -%>
+
+      // Reverse global updates
+<% Object.keys(globals.updated).forEach(key => { -%>
+      async (ctx: MigrationContext) => {
+        // Reverse updates to `<%= key %>`
+        await payload.updateGlobal({
+          req,
+          slug: "<%= key %>",
+          data: {
+<% Object.keys(globals.updated[key]).forEach(propKey => { -%>
+            "<%= propKey %>": ctx.backup?.globals?.["<%= key %>"]?.["<%= propKey %>"] || null,
+<% }); -%>
+          },
+        })
+      },
+<% }); -%>
+    ],
+    ctx,
+    successfulSteps,
+  )
+}

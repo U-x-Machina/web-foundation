@@ -4,6 +4,9 @@ node_modules
 .DS_Store
 .next
 .vercel
+.tmp
 
 # Payload default media upload directory
 public/media/
+# Sentry Config File
+.env.sentry-build-plugin

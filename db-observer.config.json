@@ -1,0 +1,4 @@
+{
+  "collections": ["ab-tests"],
+  "globals": ["landing-page"]
+}

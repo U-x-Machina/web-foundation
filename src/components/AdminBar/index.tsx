@@ -3,10 +3,9 @@
 import type { PayloadAdminBarProps } from 'payload-admin-bar'
 
 import { cn } from '@/utilities/cn'
-import { useSelectedLayoutSegments } from 'next/navigation'
+import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
 import { PayloadAdminBar } from 'payload-admin-bar'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 const collectionLabels = {
   pages: {
@@ -55,11 +54,11 @@ export const AdminBar: React.FC<{
             user: 'text-white',
           }}
           cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
-          collection={collection}
-          collectionLabels={{
-            plural: collectionLabels[collection]?.plural || 'Pages',
-            singular: collectionLabels[collection]?.singular || 'Page',
-          }}
+          // collection={collection}
+          // collectionLabels={{
+          //   plural: collectionLabels[collection]?.plural || 'Pages',
+          //   singular: collectionLabels[collection]?.singular || 'Page',
+          // }}
           logo={<Title />}
           onAuthChange={onAuthChange}
           onPreviewExit={() => {

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 
-import type { Page, Post } from '../payload-types'
+import type { LandingPage, Page, Post } from '../payload-types'
 
 import { mergeOpenGraph } from './mergeOpenGraph'
 
-export const generateMeta = async (args: { doc: Page | Post }): Promise<Metadata> => {
+export const generateMeta = async (args: { doc: Page | Post | LandingPage }): Promise<Metadata> => {
   const { doc } = args || {}
 
   const ogImage =
@@ -13,9 +13,7 @@ export const generateMeta = async (args: { doc: Page | Post }): Promise<Metadata
     'url' in doc.meta.image &&
     `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.meta.image.url}`
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+  const title = doc?.meta?.title || 'Web Foundation'
 
   return {
     description: doc?.meta?.description,
@@ -29,7 +27,7 @@ export const generateMeta = async (args: { doc: Page | Post }): Promise<Metadata
           ]
         : undefined,
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: '/',
     }),
     title,
   }

@@ -32,7 +32,8 @@ variable "google_project_services" {
     "run.googleapis.com",
     "compute.googleapis.com",
     "artifactregistry.googleapis.com",
-    "vpcaccess.googleapis.com"
+    "vpcaccess.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
 }
 
@@ -45,72 +46,112 @@ variable "environments" {
   description = "Environments configuration"
   default = {
     "development" = {
-      "name"          = "development",
-      "subdomain"     = "development",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "512Mi",
-      "cpu_boost"     = false,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 1,
-      "enable_cdn"    = false,
-      "reviewers"     = {
-                          "teams": [],
-                          "users": []
-                        }
+      "name"            = "development",
+      "subdomain"       = "development",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "512Mi",
+      "cpu_boost"       = false,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 1,
+      "enable_cdn"      = false,
+      "reviewers"       = {
+                            "teams": [],
+                            "users": []
+                          }
     }
     "test" = {
-      "name"          = "test",
-      "subdomain"     = "test",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "512Mi",
-      "cpu_boost"     = false,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 2,
-      "enable_cdn"    = false,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "test",
+      "subdomain"       = "test",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "512Mi",
+      "cpu_boost"       = false,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 2,
+      "enable_cdn"      = false,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
     }
     "staging" = {
-      "name"          = "staging",
-      "subdomain"     = "staging",
-      "regions"       = ["europe-west1"],
-      "cpu"           = 1,
-      "memory"        = "1Gi",
-      "cpu_boost"     = true,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 3,
-      "enable_cdn"    = true,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "staging",
+      "subdomain"       = "staging",
+      "regions"         = ["europe-west1"],
+      "cpu"             = 1,
+      "memory"          = "1Gi",
+      "cpu_boost"       = true,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 3,
+      "enable_cdn"      = true,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
     }
     "production" = {
-      "name"          = "production",
-      "subdomain"     = "",
-      "regions"       = ["us-central1", "europe-west1", "asia-east1"]
-      "cpu"           = 1,
-      "memory"        = "1Gi",
-      "cpu_boost"     = true,
-      "cpu_idle"      = false,
-      "concurrency"   = 80,
-      "min_instances" = 0,
-      "max_instances" = 10,
-      "enable_cdn"    = true,
-      "reviewers"     = {
-                          "teams": [11043647],
-                          "users": []
-                        }
+      "name"            = "production",
+      "subdomain"       = "",
+      "regions"         = ["us-central1", "europe-west1", "asia-east1"]
+      "cpu"             = 1,
+      "memory"          = "1Gi",
+      "cpu_boost"       = true,
+      "cpu_idle"        = false,
+      "concurrency"     = 80,
+      "min_instances"   = 0,
+      "max_instances"   = 10,
+      "enable_cdn"      = true,
+      "reviewers"       = {
+                            "teams": [11043647],
+                            "users": []
+                          }
+    }
+  }
+}
+
+variable "basic_auth" {
+  description = "Basic Auth configuration"
+  default = {
+    "development" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "test" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "staging" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+    "production" = {
+      "enabled" = true,
+      "user"    = "uxm"
+    }
+  }
+}
+
+variable "admin_auth" {
+  description     = "Payload CMS admin auth configuration"
+  default = {
+    "development" = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "test"        = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "staging"     = {
+      "email"     = "admin@uxmachina.co"
+    }
+    "production"  = {
+      "email"     = "admin@uxmachina.co"
     }
   }
 }
@@ -125,6 +166,17 @@ variable "gar_repository" {
   type        = string
   description = "Google Artifact Registry repository name"
   default     = "builds"
+}
+
+variable "gcs_location" {
+  type        = string
+  description = "Google Cloud Storage location"
+  default     = "EU"
+}
+
+variable "gcs_public_tag_value" {
+  type        = string
+  description = "Tag value for Google Cloud Storage public access"
 }
 
 variable "default_environment" {
@@ -174,4 +226,26 @@ variable "github_repo" {
 variable "github_actions_deployer_service_account" {
   type        = string
   description = "Email of the Google Cloud Platform Service Account used by Workload Identity Federation to deploy from Github Actions"
+}
+
+variable "sentry_auth_token" {
+  type        = string
+  description = "Sentry Auth Token"
+}
+
+variable "sentry_org" {
+  type        = string
+  description = "Sentry organization"
+  default     = "u-x-machina"
+}
+
+variable "sentry_default_team" {
+  type        = string
+  description = "Default Sentry team to be added to projects"
+  default     = "u-x-machina"
+}
+
+variable "google_analytics_tracking_id" {
+  type        = string
+  description = "Google Analytics tracking ID"
 }
